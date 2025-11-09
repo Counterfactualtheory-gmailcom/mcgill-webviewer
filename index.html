@@ -266,7 +266,7 @@ followupBtn.onclick = async () => {
   const q = followupText.value.trim();
   if (!q) return;
 
-  // ✅ Only show one “Answer coming…” message, not duplicated
+  // ✅ Only show one "Answer coming..." message, not duplicated
   if (!document.getElementById("loading-active")) {
     const tempLoading = document.createElement("div");
     tempLoading.id = "loading-active";
@@ -279,22 +279,16 @@ followupBtn.onclick = async () => {
     tempLoading.style.margin = "12px auto";
     tempLoading.textContent = "Answer coming...";
     outEl.appendChild(tempLoading);
-
-    // ✅ Auto-scroll to show the loading message
-    setTimeout(() => {
-      tempLoading.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 150);
   }
 
-  // ✅ Hide the bottom Thunkable loader (prevent duplicate red bar)
-  loading.style.display = "none";
+  loading.style.display = 'block';
   followupBtn.disabled = true;
 
   try {
-    const res = await fetch("https://mcgillcombinedacrabackend-production.up.railway.app/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ question: q }),
+    const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ question: q })
     });
 
     const data = await res.json();
@@ -303,64 +297,20 @@ followupBtn.onclick = async () => {
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
 
-// ✅ Append next answer below previous answers (retain full conversation)
-safeRender(data.answer || "(no response)");
+    // ✅ Append next answer below previous answers (retain full conversation)
+    safeRender(data.answer || '(no response)');
 
-// ✅ After rendering, clean up bullet dots and limit sources
-tidySourceBullets();
-
-} catch (err) {
-  const oldLoading = document.getElementById("loading-active");
-  if (oldLoading) oldLoading.remove();
-  safeRender("⚠️ Error sending follow-up: " + err.message);
-  console.error("Fetch error:", err);
-}
-
-loading.style.display = "none";
-followupBtn.disabled = false;
-followupText.value = "";
-
-/* ───────────────────────────────
- * FRONTEND CLEANUP — FIX STRAY DOTS & LIMIT SOURCE LINKS
- * ──────────────────────────────*/
-function tidySourceBullets() {
-  // Remove any empty bullet points (list items containing only a dot or whitespace)
-  const listItems = Array.from(outEl.querySelectorAll("li"));
-  listItems.forEach(li => {
-    const text = li.textContent.trim();
-    if (!text || text === "." || text === "•") {
-      li.remove();
-    }
-  });
-
-  // Replace placeholder "Verified Greenlist Source" with readable URL path
-  const links = Array.from(outEl.querySelectorAll("#out a[href]"));
-  links.forEach(a => {
-    if (/Verified Greenlist Source/i.test(a.textContent.trim())) {
-      try {
-        const url = new URL(a.href);
-        const host = url.hostname.replace(/^www\./, "");
-        const path = url.pathname.replace(/\/$/, "");
-        a.textContent = host + path;
-      } catch {
-        a.textContent = a.href;
-      }
-    }
-  });
-
-  // Limit to a maximum of 8 visible links
-  const linkLis = links.map(a => a.closest("li")).filter(li => li && li.isConnected);
-  if (linkLis.length > 8) {
-    linkLis.slice(8).forEach(li => li.remove());
-    const note = document.createElement("div");
-    note.textContent = "(showing top 8 verified sources)";
-    note.style.textAlign = "center";
-    note.style.marginTop = "10px";
-    note.style.fontSize = "14px";
-    note.style.color = "#555";
-    outEl.appendChild(note);
+  } catch (err) {
+    const oldLoading = document.getElementById("loading-active");
+    if (oldLoading) oldLoading.remove();
+    safeRender('⚠️ Error sending follow-up: ' + err.message);
+    console.error('Fetch error:', err);
   }
-}
+
+  loading.style.display = 'none';
+  followupBtn.disabled = false;
+  followupText.value = '';
+};
   </script>
 </body>
 </html>
