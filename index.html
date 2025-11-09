@@ -266,7 +266,7 @@ followupBtn.onclick = async () => {
   const q = followupText.value.trim();
   if (!q) return;
 
-  // ✅ Only show one "Answer coming..." message, not duplicated
+  // ✅ Only show one “Answer coming…” message, not duplicated
   if (!document.getElementById("loading-active")) {
     const tempLoading = document.createElement("div");
     tempLoading.id = "loading-active";
@@ -279,53 +279,60 @@ followupBtn.onclick = async () => {
     tempLoading.style.margin = "12px auto";
     tempLoading.textContent = "Answer coming...";
     outEl.appendChild(tempLoading);
+
+    // ✅ Auto-scroll to show the loading message
+    setTimeout(() => {
+      tempLoading.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 150);
   }
 
-  loading.style.display = 'block';
+  // ✅ Hide the bottom Thunkable loader (prevent duplicate red bar)
+  loading.style.display = "none";
   followupBtn.disabled = true;
 
   try {
-    const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify({ question: q })
+    const res = await fetch("https://mcgillcombinedacrabackend-production.up.railway.app/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ question: q }),
     });
 
     const data = await res.json();
 
-    // ✅ Remove temporary loading indicator before rendering
+    // ✅ Remove the temporary loading indicator before rendering new content
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
 
-    // ✅ Append new answer below previous ones
-    safeRender(data.answer || '(no response)');
+    // ✅ Append next answer below previous answers (retain full conversation)
+    safeRender(data.answer || "(no response)");
 
-    // ✅ Limit verified source dump & replace placeholders
+    // ✅ Clean up link dump (limit to 8, remove bullet dots)
     limitVerifiedSources();
 
   } catch (err) {
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
-    safeRender('⚠️ Error sending follow-up: ' + err.message);
-    console.error('Fetch error:', err);
+    safeRender("⚠️ Error sending follow-up: " + err.message);
+    console.error("Fetch error:", err);
   }
 
-  loading.style.display = 'none';
+  loading.style.display = "none";
   followupBtn.disabled = false;
-  followupText.value = '';
+  followupText.value = "";
 };
 
-// ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+// ✅ Trim “Verified Greenlist Source” spam and fix bullet dots
 function limitVerifiedSources() {
-  const links = outEl.querySelectorAll('#out a[href]');
+  const listItems = outEl.querySelectorAll("li");
+  const links = outEl.querySelectorAll("#out a[href]");
 
-  // Replace generic placeholder text with readable host/path
-  links.forEach(a => {
+  // Replace placeholder link text with actual readable paths
+  links.forEach((a) => {
     if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
       try {
         const url = new URL(a.href);
-        const host = url.hostname.replace(/^www\./, '');
-        const path = url.pathname.replace(/\/$/, '');
+        const host = url.hostname.replace(/^www\./, "");
+        const path = url.pathname.replace(/\/$/, "");
         a.textContent = host + path;
       } catch {
         a.textContent = a.href;
@@ -333,17 +340,22 @@ function limitVerifiedSources() {
     }
   });
 
-  // Limit to 8 max visible links
+  // Remove empty bullet items (fix the stray dots)
+  listItems.forEach((li) => {
+    if (!li.textContent.trim()) li.remove();
+  });
+
+  // Limit to 8 visible links
   if (links.length > 8) {
     for (let i = 8; i < links.length; i++) {
-      links[i].style.display = 'none';
+      links[i].closest("li")?.remove();
     }
-    const note = document.createElement('div');
-    note.textContent = '(showing top 8 verified sources)';
-    note.style.textAlign = 'center';
-    note.style.marginTop = '10px';
-    note.style.fontSize = '14px';
-    note.style.color = '#555';
+    const note = document.createElement("div");
+    note.textContent = "(showing top 8 verified sources)";
+    note.style.textAlign = "center";
+    note.style.marginTop = "10px";
+    note.style.fontSize = "14px";
+    note.style.color = "#555";
     outEl.appendChild(note);
   }
 }
