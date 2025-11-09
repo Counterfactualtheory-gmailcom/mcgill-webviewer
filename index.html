@@ -303,9 +303,6 @@ followupBtn.onclick = async () => {
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
 
-    // ✅ Append next answer below previous answers (retain full conversation)
-    safeRender(data.answer || "(no response)");
-
 // ✅ Append next answer below previous answers (retain full conversation)
 safeRender(data.answer || "(no response)");
 
