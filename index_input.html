@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dalhousie COMPAiSS Input</title>
+<title>McGill COMPAiSS Input</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
     font-family: "Roboto", sans-serif;
-    background-color: #0F4079; /* ✅ Dalhousie Blue */
-    color: #f8c600;
+    background-color: #ED1B2F; /* ✅ McGill Red */
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,13 +34,13 @@
 
   .subtitle {
     font-size: 14px;
-    color: #6EC1FF;
+    color: #0F4079; /* ✅ Keep “Write in any language” in blue */
     margin-top: 4px;
   }
 
   .input-box {
-    background-color: #111;
-    border: 2px solid #f8c600;
+    background-color: #fff;
+    border: 2px solid #ED1B2F;
     border-radius: 12px;
     padding: 16px;
     width: 85%;
@@ -47,25 +48,25 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: 0 0 8px rgba(248,198,0,0.3);
+    box-shadow: 0 0 8px rgba(237,27,47,0.4);
   }
 
   textarea {
     padding: 12px;
     font-size: 16px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid #ccc;
     outline: none;
     resize: none;
     height: 160px;
-    background-color: #fff;
+    background-color: #f9f9f9;
     color: #000;
     margin-bottom: 12px;
   }
 
   button {
-    background-color: #f8c600;
-    color: #000;
+    background-color: #ED1B2F;
+    color: #fff;
     font-weight: 600;
     border: none;
     border-radius: 8px;
@@ -75,13 +76,13 @@
     transition: background-color 0.2s ease-in-out;
   }
 
-  button:hover { background-color: #ffd500; }
+  button:hover { background-color: #c8102e; }
 
   #toast {
     visibility: hidden;
     min-width: 220px;
-    background-color: #f8c600;
-    color: #000;
+    background-color: #ED1B2F;
+    color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 12px;
@@ -112,7 +113,7 @@
 
 <body>
   <header>
-    <h1>Dalhousie COMPAiSS</h1>
+    <h1>McGill COMPAiSS</h1>
     <div class="subtitle">Write in any language</div>
   </header>
 
@@ -143,50 +144,40 @@
       }
     }
 
-    function showToast(text, duration = 2000, asHTML = false) {
-      if (asHTML) toast.innerHTML = text;
-      else toast.textContent = text;
-      toast.className = "show";
-      setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-      }, duration);
-    }
+function showToast(text, duration = 2000, asHTML = false) {
+  if (asHTML) toast.innerHTML = text;
+  else toast.textContent = text;
+  toast.className = "show";
+  if (duration < 999999) {
+    setTimeout(() => {
+      toast.className = toast.className.replace("show", "");
+    }, duration);
+  }
+}
 
-    /* ---------- Main send function ---------- */
-    function sendInput() {
-      const message = inputBox.value.trim();
-      if (!message) {
-        alert("Please enter a question or issue.");
-        return;
-      }
+/* ---------- Main send function ---------- */
+// ✨ Updated sendInput() — shows animated dots, then deep-links back to app
+function sendInput() {
+  const message = inputBox.value.trim();
+  if (!message) {
+    alert("Please enter a question or issue.");
+    return;
+  }
 
-      let sent = false;
+  try {
+    // ✅ Send directly to Thunkable via bridge
+    ThunkableWebviewerExtension.postMessage(message);
+  } catch (e) {
+    console.error("Bridge error:", e);
+    alert("Unable to send message back to the app.");
+    return;
+  }
 
-      const trySend = () => {
-        if (!isBridgeReady() || sent) return;
-        try {
-          window.ThunkableWebviewerExtension.postMessage(message);
-          sent = true;
-          showToast("✅ Sent", 1200);
-          setTimeout(() => {
-            showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
-          }, 1300);
-        } catch (err) {
-          console.error("Bridge error:", err);
-          showToast("⚠️ Bridge Error", 2000);
-        }
-      };
+  // Optional visual feedback
+showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
 
-      whenBridgeReady(trySend);
-
-      // Fallback retry if the bridge event never fires
-      setTimeout(() => {
-        if (!sent && isBridgeReady()) trySend();
-      }, 1800);
-
-      inputBox.value = "";
-    }
-
+  inputBox.value = "";
+}
     /* ---------- Event listeners ---------- */
     inputBox.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
