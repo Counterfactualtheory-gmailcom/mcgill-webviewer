@@ -306,29 +306,40 @@ followupBtn.onclick = async () => {
     // ✅ Append next answer below previous answers (retain full conversation)
     safeRender(data.answer || "(no response)");
 
-    // ✅ Clean up link dump (limit to 8, remove bullet dots)
-    limitVerifiedSources();
+// ✅ Append next answer below previous answers (retain full conversation)
+safeRender(data.answer || "(no response)");
 
-  } catch (err) {
-    const oldLoading = document.getElementById("loading-active");
-    if (oldLoading) oldLoading.remove();
-    safeRender("⚠️ Error sending follow-up: " + err.message);
-    console.error("Fetch error:", err);
-  }
+// ✅ After rendering, clean up bullet dots and limit sources
+tidySourceBullets();
 
-  loading.style.display = "none";
-  followupBtn.disabled = false;
-  followupText.value = "";
-};
+} catch (err) {
+  const oldLoading = document.getElementById("loading-active");
+  if (oldLoading) oldLoading.remove();
+  safeRender("⚠️ Error sending follow-up: " + err.message);
+  console.error("Fetch error:", err);
+}
 
-// ✅ Trim “Verified Greenlist Source” spam and fix bullet dots
-function limitVerifiedSources() {
-  const listItems = outEl.querySelectorAll("li");
-  const links = outEl.querySelectorAll("#out a[href]");
+loading.style.display = "none";
+followupBtn.disabled = false;
+followupText.value = "";
 
-  // Replace placeholder link text with actual readable paths
-  links.forEach((a) => {
-    if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
+/* ───────────────────────────────
+ * FRONTEND CLEANUP — FIX STRAY DOTS & LIMIT SOURCE LINKS
+ * ──────────────────────────────*/
+function tidySourceBullets() {
+  // Remove any empty bullet points (list items containing only a dot or whitespace)
+  const listItems = Array.from(outEl.querySelectorAll("li"));
+  listItems.forEach(li => {
+    const text = li.textContent.trim();
+    if (!text || text === "." || text === "•") {
+      li.remove();
+    }
+  });
+
+  // Replace placeholder "Verified Greenlist Source" with readable URL path
+  const links = Array.from(outEl.querySelectorAll("#out a[href]"));
+  links.forEach(a => {
+    if (/Verified Greenlist Source/i.test(a.textContent.trim())) {
       try {
         const url = new URL(a.href);
         const host = url.hostname.replace(/^www\./, "");
@@ -340,16 +351,10 @@ function limitVerifiedSources() {
     }
   });
 
-  // Remove empty bullet items (fix the stray dots)
-  listItems.forEach((li) => {
-    if (!li.textContent.trim()) li.remove();
-  });
-
-  // Limit to 8 visible links
-  if (links.length > 8) {
-    for (let i = 8; i < links.length; i++) {
-      links[i].closest("li")?.remove();
-    }
+  // Limit to a maximum of 8 visible links
+  const linkLis = links.map(a => a.closest("li")).filter(li => li && li.isConnected);
+  if (linkLis.length > 8) {
+    linkLis.slice(8).forEach(li => li.remove());
     const note = document.createElement("div");
     note.textContent = "(showing top 8 verified sources)";
     note.style.textAlign = "center";
