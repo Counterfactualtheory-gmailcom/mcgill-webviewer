@@ -93,13 +93,20 @@
       background: #730000;
     }
 
-    /* 🔹 Animated dots */
-    #loading {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-      font-weight: 600;
-    }
+#loading {
+  display: none;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+  background-color: #B5121B;   /* McGill red */
+  color: #FFFFFF;              /* White text */
+  padding: 12px 16px;
+  border-radius: 8px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
 
     #loading span { animation: blink 1.4s infinite both; }
     #loading span:nth-child(2) { animation-delay: .2s; }
