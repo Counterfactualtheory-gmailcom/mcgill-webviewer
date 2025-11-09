@@ -28,10 +28,15 @@
     }
     .wrap { max-width: var(--wrap); margin: 0 auto; padding: var(--pad); }
 
-    a { word-break: break-word; text-decoration: underline; color: var(--link); }
-    a:visited { color: var(--link-visited); }
-    a:hover, a:focus { opacity: .95; }
-
+/* 🔹 Standard blue hyperlinks for accessibility */
+a { 
+  word-break: break-word; 
+  text-decoration: underline; 
+  color: #0645AD;        /* Standard web blue */
+}
+a:visited { color: #0B0080; }  /* Standard visited purple */
+a:hover, a:focus { color: #3366CC; opacity: 1; }
+    
     #out, #out *:not(a) { color: var(--text) !important; }
     #out a { color: var(--link) !important; }
     #out a:visited { color: var(--link-visited) !important; }
