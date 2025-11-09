@@ -260,22 +260,39 @@
     followupBtn.onclick = async () => {
       const q = followupText.value.trim();
       if (!q) return;
+
+      // Show "Answer coming..." box visibly until real output is rendered
       loading.style.display = 'block';
       followupBtn.disabled = true;
+      outEl.innerHTML = '<div style="text-align:center; background:#B5121B; color:#FFFFFF; padding:12px; border-radius:8px;">Answer coming<span>.</span><span>.</span><span>.</span></div>';
+
       try {
-        const res = await fetch('https://web-production-MCGILL.up.railway.app/ask', {   /* 🔗 Replace with your McGill backend URL */
+        // ✅ Correct McGill backend URL
+        const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify({ question: q })
         });
+
+        // ✅ Debug log for verification (check DevTools console)
+        console.log('✅ Fetch complete, status:', res.status);
+
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
         const data = await res.json();
+        console.log('✅ McGill API Response:', data);
+
+        // ✅ Render the answer once retrieved
         safeRender(data.answer || '(no response)');
       } catch (err) {
         safeRender('⚠️ Error sending follow-up: ' + err.message);
+        console.error('Fetch error:', err);
+      } finally {
+        // Hide loader and re-enable input once finished
+        loading.style.display = 'none';
+        followupBtn.disabled = false;
+        followupText.value = '';
       }
-      loading.style.display = 'none';
-      followupBtn.disabled = false;
-      followupText.value = '';
     };
   </script>
 </body>
