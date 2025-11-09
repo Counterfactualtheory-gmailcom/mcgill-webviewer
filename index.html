@@ -262,43 +262,55 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       }
     };
 
-    followupBtn.onclick = async () => {
-      const q = followupText.value.trim();
-      if (!q) return;
+followupBtn.onclick = async () => {
+  const q = followupText.value.trim();
+  if (!q) return;
 
-      // Show "Answer coming..." box visibly until real output is rendered
-      loading.style.display = 'block';
-      followupBtn.disabled = true;
-      outEl.innerHTML = '<div style="text-align:center; background:#B5121B; color:#FFFFFF; padding:12px; border-radius:8px;">Answer coming<span>.</span><span>.</span><span>.</span></div>';
+  // ✅ Only show one "Answer coming..." message, not duplicated
+  if (!document.getElementById("loading-active")) {
+    const tempLoading = document.createElement("div");
+    tempLoading.id = "loading-active";
+    tempLoading.style.textAlign = "center";
+    tempLoading.style.background = "#B5121B";
+    tempLoading.style.color = "#FFFFFF";
+    tempLoading.style.padding = "12px 16px";
+    tempLoading.style.borderRadius = "8px";
+    tempLoading.style.width = "fit-content";
+    tempLoading.style.margin = "12px auto";
+    tempLoading.textContent = "Answer coming...";
+    outEl.appendChild(tempLoading);
+  }
 
-      try {
-        // ✅ Correct McGill backend URL
-        const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
-          body: JSON.stringify({ question: q })
-        });
+  loading.style.display = 'block';
+  followupBtn.disabled = true;
 
-        // ✅ Debug log for verification (check DevTools console)
-        console.log('✅ Fetch complete, status:', res.status);
+  try {
+    const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ question: q })
+    });
 
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
 
-        const data = await res.json();
-        console.log('✅ McGill API Response:', data);
+    // ✅ Remove the temporary loading indicator before rendering new content
+    const oldLoading = document.getElementById("loading-active");
+    if (oldLoading) oldLoading.remove();
 
-        // ✅ Render the answer once retrieved
-        safeRender(data.answer || '(no response)');
-      } catch (err) {
-        safeRender('⚠️ Error sending follow-up: ' + err.message);
-        console.error('Fetch error:', err);
-      } finally {
-        // Hide loader and re-enable input once finished
-        loading.style.display = 'none';
-        followupBtn.disabled = false;
-        followupText.value = '';
-      }
-    };
+    // ✅ Append next answer below previous answers (retain full conversation)
+    safeRender(data.answer || '(no response)');
+
+  } catch (err) {
+    const oldLoading = document.getElementById("loading-active");
+    if (oldLoading) oldLoading.remove();
+    safeRender('⚠️ Error sending follow-up: ' + err.message);
+    console.error('Fetch error:', err);
+  }
+
+  loading.style.display = 'none';
+  followupBtn.disabled = false;
+  followupText.value = '';
+};
   </script>
 </body>
 </html>
