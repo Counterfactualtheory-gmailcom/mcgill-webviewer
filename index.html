@@ -293,12 +293,15 @@ followupBtn.onclick = async () => {
 
     const data = await res.json();
 
-    // ✅ Remove the temporary loading indicator before rendering new content
+    // ✅ Remove temporary loading indicator before rendering
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
 
-    // ✅ Append next answer below previous answers (retain full conversation)
+    // ✅ Append new answer below previous ones
     safeRender(data.answer || '(no response)');
+
+    // ✅ Limit verified source dump & replace placeholders
+    limitVerifiedSources();
 
   } catch (err) {
     const oldLoading = document.getElementById("loading-active");
@@ -311,6 +314,39 @@ followupBtn.onclick = async () => {
   followupBtn.disabled = false;
   followupText.value = '';
 };
+
+// ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+function limitVerifiedSources() {
+  const links = outEl.querySelectorAll('#out a[href]');
+
+  // Replace generic placeholder text with readable host/path
+  links.forEach(a => {
+    if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
+      try {
+        const url = new URL(a.href);
+        const host = url.hostname.replace(/^www\./, '');
+        const path = url.pathname.replace(/\/$/, '');
+        a.textContent = host + path;
+      } catch {
+        a.textContent = a.href;
+      }
+    }
+  });
+
+  // Limit to 8 max visible links
+  if (links.length > 8) {
+    for (let i = 8; i < links.length; i++) {
+      links[i].style.display = 'none';
+    }
+    const note = document.createElement('div');
+    note.textContent = '(showing top 8 verified sources)';
+    note.style.textAlign = 'center';
+    note.style.marginTop = '10px';
+    note.style.fontSize = '14px';
+    note.style.color = '#555';
+    outEl.appendChild(note);
+  }
+}
   </script>
 </body>
 </html>
