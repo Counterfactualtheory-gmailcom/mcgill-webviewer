@@ -41,35 +41,38 @@
     margin-top: 5px;
   }
   
-  .input-box {
-    background-color: #fff;
-    border: 2px solid #ED1B2F;    /* ✅ McGill red border */
-    border-radius: 12px;
-    padding: 16px;
-    max-width: 420px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    box-shadow: 0 0 8px rgba(237, 27, 47, 0.25);
-    width: 85%;                   /* ✅ identical to SC */
-    margin: 0 auto;
-    margin-left: 0px;
-    height: 65vh;                 /* ✅ same height for proportion */
-  }
+.input-box {
+  background-color: #fff;
+  border: 2px solid #ED1B2F;     /* McGill red */
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 0 8px rgba(237, 27, 47, 0.25);
+  width: 85%;
+  margin: 0 auto;
+  margin-left: 0px;              /* identical to SC */
+  height: 65vh;                  /* identical total height */
+  justify-content: flex-start;   /* ✅ lifts textarea upward within box */
+}
 
-  textarea {
-    padding: 14px;
-    font-size: 18px;              /* ✅ same text size as SC */
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    resize: none;
-    height: 160px;
-    background-color: #f9f9f9;
-    color: #444444;               /* ✅ dark gray text */
-    margin-bottom: 12px;
-  }
-
+textarea {
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  resize: none;
+  height: 160px;
+  background-color: #f9f9f9;
+  color: #444444;
+  margin-top: 2px;               /* ✅ raises textarea slightly to match SC */
+  margin-bottom: 12px;           /* ✅ identical to SC */
+  width: 98%;                    /* ✅ widens box left/right like SC */
+  align-self: center;            /* ✅ ensures perfect centering */
+}
 
   button {
     background-color: #ED1B2F;    /* ✅ McGill red */
