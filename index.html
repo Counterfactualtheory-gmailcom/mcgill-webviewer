@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>McGill COMPAiSS Viewer</title>
 
+/* ✅ Remove unwanted bullet dots and emoji markers in the output */
+#out ul,
+#out ol {
+  list-style-type: none !important;  /* removes browser bullets */
+  padding-left: 0 !important;        /* align text with body */
+  margin-left: 0 !important;
+}
+
+#out li::before {
+  content: none !important;          /* remove emoji or bullet prefix */
+}
+  
   <style>
   :root {
     --wrap: 900px;
