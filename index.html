@@ -348,13 +348,15 @@ followupBtn.onclick = async () => {
   followupText.value = '';
 };
 
-// ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+// ✅ Trim excess “Verified Greenlist Source” links & ensure link text visible
 function limitVerifiedSources() {
   const links = outEl.querySelectorAll('#out a[href]');
 
-  // Replace generic placeholder text with readable host/path
   links.forEach(a => {
-    if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
+    let text = a.textContent.trim();
+
+    // If the link text is missing or placeholder, rebuild readable text
+    if (!text || text.match(/^(\*|•|·|Verified Greenlist Source)?$/i)) {
       try {
         const url = new URL(a.href);
         const host = url.hostname.replace(/^www\./, '');
