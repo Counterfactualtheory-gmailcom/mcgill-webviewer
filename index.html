@@ -352,10 +352,9 @@ followupBtn.onclick = async () => {
 };
 
 // ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+/*
 function limitVerifiedSources() {
   const links = outEl.querySelectorAll('#out a[href]');
-
-  // Replace generic placeholder text with readable host/path
   links.forEach(a => {
     if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
       try {
@@ -369,7 +368,6 @@ function limitVerifiedSources() {
     }
   });
 
-  // Limit to 8 max visible links
   if (links.length > 8) {
     for (let i = 8; i < links.length; i++) {
       links[i].style.display = 'none';
@@ -383,6 +381,7 @@ function limitVerifiedSources() {
     outEl.appendChild(note);
   }
 }
+*/
   </script>
 </body>
 </html>
