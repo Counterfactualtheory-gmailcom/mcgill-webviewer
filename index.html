@@ -181,7 +181,7 @@ const lists = document.querySelectorAll("ul, ol");
 }
 
 function removeParagraphBullets() {
-  const paras = document.querySelectorAll("#out p");
+const paras = document.querySelectorAll("p");
   paras.forEach(p => {
     const t = p.textContent.trim();
     if (t === "•" || t === "-" || t === "*" || t === "·") {
