@@ -17,6 +17,20 @@
     #out li::before {
       content: none !important;
     }
+
+    :root {
+      --wrap: 900px;
+      --pad: 16px;
+      --border: #e5e7eb;
+      --accent: #ED1B2F;
+      --text: #000000;
+      --bg: #696969;
+      --bg-page: #f2f2f2;
+      --muted: #ffccd0;
+    }
+
+    /* ...rest of your CSS styles... */
+
   
   <style>
   :root {
@@ -171,86 +185,50 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
     }
 
-function safeRender(md) {
-  const raw = String(md || '');
+    function safeRender(md) {
+      const raw = String(md || '');
 
-  // ✅ Strip control tags before rendering (match DAL behavior)
-  const cleaned = raw
-    .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
-    .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
-    .replace(/\[+COMPLETED+\]/gi, '')
-    .replace(/\[+DONE+\]/gi, '')
-    .trim();
-
-  const html = marked.parse(cleaned || '');
-  const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
-
-  let linked = clean1;
-  try {
-    if (typeof linkifyHtml === 'function') {
-      linked = linkifyHtml(clean1, {
-        defaultProtocol: 'https',
-        nl2br: false,
-        validate: { url: (v) => /^https?:\/\//i.test(v) },
-        attributes: { rel: 'noopener', target: '_blank' }
-      });
-    }
-  } catch (e) {
-    debug('linkify error:' + e);
-  }
-
-  const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
-
-  if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
-  outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
-
-  // ✅ After we inject the new HTML, clean up empty bullets / blank paras
-  removeEmptyBullets();
-
-  lastAnswer = outEl.innerText;
-
-  outEl.querySelectorAll('a').forEach(a => {
-    a.target = '_blank';
-    a.rel = 'noopener';
-  });
-
-  if (!linkHandlerAttached) {
-    outEl.addEventListener('click', e => {
-      const a = e.target.closest && e.target.closest('a[href]');
-      if (!a) return;
-      const url = a.href;
-      if (/^https?:/i.test(url)) {
-        e.preventDefault();
-        try {
-          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
-        } catch (err) {
-          window.location.assign(url);
+// ✅ Strip control tags before rendering (match DAL behavior)
+const cleaned = raw
+  .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
+  .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
+  .replace(/\[+COMPLETED+\]/gi, '')
+  .replace(/\[+DONE+\]/gi, '')
+  .trim();
+      
+ const html = marked.parse(cleaned || '');
+      const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+      let linked = clean1;
+      try {
+        if (typeof linkifyHtml === 'function') {
+          linked = linkifyHtml(clean1, {
+            defaultProtocol: 'https', nl2br: false,
+            validate: { url: (v) => /^https?:\/\//i.test(v) },
+            attributes: { rel: 'noopener', target: '_blank' }
+          });
         }
+      } catch (e) { debug('linkify error:' + e); }
+
+      const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
+      if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
+      outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
+      lastAnswer = outEl.innerText;
+      outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+
+      if (!linkHandlerAttached) {
+        outEl.addEventListener('click', e => {
+          const a = e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          const url = a.href;
+          if (/^https?:/i.test(url)) {
+            e.preventDefault();
+            try { ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url); }
+            catch (err) { window.location.assign(url); }
+          }
+        });
+        linkHandlerAttached = true;
       }
-    });
-    linkHandlerAttached = true;
-  }
-}
-
-// ✅ Helper that actually removes the empty bullets / blank lines
-function removeEmptyBullets() {
-  const lists = outEl.querySelectorAll('ul, ol');
-
-  // Remove empty <li>
-  lists.forEach(list => {
-    const items = list.querySelectorAll('li');
-    items.forEach(li => {
-      if (!li.textContent.trim()) li.remove();
-    });
-    if (!list.textContent.trim()) list.remove();
-  });
-
-  // ALSO remove empty <p></p> lines that create vertical gaps
-  const paras = outEl.querySelectorAll('p');
-  paras.forEach(p => {
-    if (!p.textContent.trim()) p.remove();
-  });
-}
+    }
 
     let firstMessageReceived = false;
     let readyPingerId = null;
