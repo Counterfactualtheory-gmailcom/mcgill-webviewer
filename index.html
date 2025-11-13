@@ -7,15 +7,24 @@
 
   <style>
     /* ✅ Remove unwanted bullet dots and emoji markers in the output */
+
+    /* ✅ Remove browser bullets for all lists */
 ul, ol {
   list-style-type: none !important;
   padding-left: 0 !important;
   margin-left: 0 !important;
 }
 
-    #out li::before {
-      content: none !important;
-    }
+/* ✅ Hide list markers in modern browsers (incl. WKWebView) */
+li::marker {
+  content: '' !important;
+}
+
+/* Extra safety so items align left without weird indents */
+li {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
   
   :root {
     --wrap: 900px;
@@ -189,13 +198,15 @@ const paras = document.querySelectorAll("p");
     }
   });
 }   
-function safeRender(md) {
-  const raw = String(md || '');
+  // Step 1: Remove bullet-only lines before markdown parse
+  const raw2 = raw
+    // Remove lines that contain ONLY “-”, “•”, or whitespace
+    .replace(/^[\s•-]+$/gm, '')
 
-  // 🔥 Remove stray bullet-only lines before markdown parsing
-  const raw2 = raw.replace(/^\s*[•\-\*·]\s*$/gm, '');
+    // Remove literal bullet characters that the model sometimes inserts
+    .replace(/^\s*•\s*/gm, '');
 
-  // ✅ Strip control tags (START, END, COMPLETED, DONE)
+  // Step 2: Strip control tags (START, END, COMPLETED, DONE)
   const cleaned = raw2
     .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
     .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
