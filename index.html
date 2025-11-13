@@ -205,7 +205,7 @@ const paras = document.querySelectorAll("p");
   // Step 1: Remove bullet-only lines before markdown parse
   const raw2 = raw
     // Remove lines that contain ONLY “-”, “•”, or whitespace
-    .replace(/^[\s•-]+$/gm, '')
+  .replace(/^(?!.*https?:\/\/)[\s•-]+$/gm, '')
 
     // Remove literal bullet characters that the model sometimes inserts
     .replace(/^\s*•\s*/gm, '');
