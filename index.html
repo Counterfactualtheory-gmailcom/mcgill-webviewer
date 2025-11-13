@@ -196,7 +196,7 @@ function safeRender(md) {
   const raw2 = raw.replace(/^\s*[•\-\*·]\s*$/gm, '');
 
   // ✅ Strip control tags (START, END, COMPLETED, DONE)
-  const cleaned = raw
+  const cleaned = raw2
     .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
     .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
     .replace(/\[+COMPLETED+\]/gi, '')
