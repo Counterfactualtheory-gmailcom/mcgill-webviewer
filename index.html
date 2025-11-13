@@ -186,7 +186,15 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
     }
 
     function safeRender(md) {
-      const raw = String(md || '');
+const raw = String(md || '');
+
+// 🚫 Remove backend-injected "Verified Greenlist Source" block
+let cleanedRaw = raw
+  .replace(/SOURCES:/gi, '')                            // remove SOURCES: header
+  .replace(/Verified Greenlist Source/gi, '')           // remove placeholder links
+  .replace(/•\s*/g, '')                                 // remove bullet dots before them
+  .replace(/^\s*$/gm, '')                               // remove empty lines left behind
+  .trim();
 
 // ✅ Strip control tags before rendering (match DAL behavior)
 const cleaned = raw
