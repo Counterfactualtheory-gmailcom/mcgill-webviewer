@@ -182,6 +182,16 @@ function removeEmptyBullets() {
     if (!list.textContent.trim()) list.remove();
   });
 }
+
+function removeParagraphBullets() {
+  const paras = document.querySelectorAll("#out p");
+  paras.forEach(p => {
+    const t = p.textContent.trim();
+    if (t === "•" || t === "-" || t === "*" || t === "·") {
+      p.remove();
+    }
+  });
+}
     
 function safeRender(md) {
   const raw = String(md || '');
