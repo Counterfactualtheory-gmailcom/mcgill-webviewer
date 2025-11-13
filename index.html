@@ -208,7 +208,7 @@ const paras = document.querySelectorAll("p");
   .replace(/^(?!.*https?:\/\/)[\s•-]+$/gm, '')
 
     // Remove literal bullet characters that the model sometimes inserts
-    .replace(/^\s*•\s*/gm, '');
+.replace(/^\s*•\s+(?!https?:\/\/)/gm, '');
 
   // Step 2: Strip control tags (START, END, COMPLETED, DONE)
   const cleaned = raw2
