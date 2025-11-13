@@ -220,26 +220,6 @@ function safeRender(md) {
       if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
       outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
 
-  function removeEmptyBullets() {
-  const lists = document.querySelectorAll("#out ul, #out ol");
-  lists.forEach(list => {
-    const items = list.querySelectorAll("li");
-    items.forEach(li => {
-      if (!li.textContent.trim()) li.remove();
-    });
-    if (!list.textContent.trim()) list.remove();
-  });
-}
-
-function removeParagraphBullets() {
-  const paras = document.querySelectorAll("#out p");
-  paras.forEach(p => {
-    const t = p.textContent.trim();
-    if (t === "•" || t === "-" || t === "*" || t === "·") {
-      p.remove();
-    }
-  });
-}      
       lastAnswer = outEl.innerText;
       outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
 
