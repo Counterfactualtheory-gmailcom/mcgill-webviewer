@@ -170,7 +170,7 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
     }
 
 function removeEmptyBullets() {
-  const lists = document.querySelectorAll("#out ul, #out ol");
+const lists = document.querySelectorAll("ul, ol");
   lists.forEach(list => {
     const items = list.querySelectorAll("li");
     items.forEach(li => {
