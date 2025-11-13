@@ -70,6 +70,14 @@ a:visited { color: #0B0080; }  /* Standard visited purple */
 a:hover, a:focus { color: #3366CC; opacity: 1; }
     
 #out, #out *:not(a) { color: var(--text) !important; }
+
+#out p:last-child,
+#out div:last-child,
+#out *:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+    
 /* ✅ Force standard blue hyperlinks for accessibility */
 #out a { color: #0645AD !important; }
 #out a:visited { color: #0B0080 !important; }
