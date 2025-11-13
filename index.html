@@ -263,6 +263,16 @@ clean2 = clean2
 if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
 outEl.innerHTML += clean2;
 
+// remove nodes that are empty or whitespace-only
+  [...temp.childNodes].forEach(node => {
+    if (node.nodeType === 1 && !node.textContent.trim()) node.remove();
+    if (node.nodeType === 3 && !node.textContent.trim()) node.remove();
+  });
+
+  outEl.append(...temp.childNodes);
+  // 🔥 SURGICAL REPLACEMENT ENDS HERE
+}
+    
       lastAnswer = outEl.innerText;
       outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
 
