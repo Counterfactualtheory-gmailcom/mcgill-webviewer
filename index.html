@@ -240,7 +240,7 @@ const paras = document.querySelectorAll("p");
 
       const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
       if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
-      outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
+    outEl.innerHTML += clean2;
 
       lastAnswer = outEl.innerText;
       outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
