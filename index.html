@@ -37,13 +37,20 @@ li {
     --muted: #ffccd0;    /* Muted light red/pink for blockquotes */
   }
 
-    html, body {
-      margin: 0; padding: 0;
-      background: var(--bg-page);
-      color: var(--text);
-      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-text-size-adjust: 100%;
-    }
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  height: auto !important;
+  min-height: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+
+  background: var(--bg-page);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
     .wrap { max-width: var(--wrap); margin: 0 auto; padding: var(--pad); }
 
 /* 🔹 Standard blue hyperlinks for accessibility */
