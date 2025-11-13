@@ -3,162 +3,157 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>McGill COMPAiSS Viewer</title>
-
+  <title>DAL Answer Viewer</title>
+ 
   <style>
-    /* ✅ Remove unwanted bullet dots and emoji markers in the output */
+    :root{
+      --wrap: 900px;
+      --pad: 16px;
+      --border: #e5e7eb;
+      --accent: #f0c44c;
+      --text: #ffffff;
+      --bg: #f2f2f2;       /* Light neutral gray */
+      --bg-page: #808080;
+      --muted: #dbe7ff;
+      --link: #9cc9ff;
+      --link-visited: #c8e0ff;
+    }
 
-    /* ✅ Remove browser bullets for all lists */
-ul, ol {
-  list-style-type: none !important;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;              /* ✅ added */
+  max-width:100%;          /* ✅ added */
+  overflow-x:hidden;       /* ✅ added — stops side scroll */
+  background:var(--bg-page);
+  color:var(--text);
+  font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+    .wrap{max-width:var(--wrap);margin:0 auto;padding:var(--pad)}
+
+a {
+  word-break: break-word;
+  text-decoration: underline;
+  color: #0055cc; /* ✅ Single deep Dalhousie blue for all links */
+}
+a:hover,
+a:focus,
+a:visited {
+  color: #0055cc; /* ✅ same color always */
+  opacity: 0.9;   /* optional subtle hover fade */
 }
 
-/* ✅ Hide list markers in modern browsers (incl. WKWebView) */
-li::marker {
-  content: '' !important;
+/* Main layout container */
+.wrap {
+  max-width: 480px;
+  width: 100%;
+  margin: 20px auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Extra safety so items align left without weird indents */
-li {
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
-  
-  :root {
-    --wrap: 900px;
-    --pad: 16px;
-    --border: #e5e7eb;
-    --accent: #ED1B2F;   /* ✅ McGill Red */
-    --text: #000000;
-    --bg: #696969;       /* Light neutral gray */
-    --bg-page: #f2f2f2;
-    --muted: #ffccd0;    /* Muted light red/pink for blockquotes */
-  }
-
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-
-  height: auto !important;
-  min-height: 0 !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-
-  background: var(--bg-page);
-  color: var(--text);
-  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  -webkit-text-size-adjust: 100%;
-}
-body::-webkit-scrollbar {
-  display: none;
+/* Output content box */
+#out {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #f8c600;
+  border-radius: 12px;
+  padding: 18px;
+  min-height: 420px;
+  width: 90%;
+  max-width: 480px;
+  margin-left: auto;      /* ✅ replace calc(auto - 3px) */
+  margin-right: auto;     /* ✅ keep it symmetric */
+  display: block;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(248,198,0,0.25);
+  position: relative;
+  left: -5px;             /* ✅ tiny left nudge for optical centering */
+  transform: none;
+  text-align: left;
 }
 
-html, body {
-  overscroll-behavior: none !important;
+/* ✅ Hint text styling for the output area */
+#out:empty::before {
+  content: "Waiting for content…";
+  font-family: "Roboto", sans-serif;
+  font-style: italic;
+  color: #555;
 }
-    .wrap { max-width: var(--wrap); margin: 0 auto; padding: var(--pad); }
     
-/* 🔹 Standard blue hyperlinks for accessibility */
-a { 
-  word-break: break-word; 
-  text-decoration: underline; 
-  color: #0645AD;        /* Standard web blue */
+/* ✅ Follow-up section: styled to match Input screen */
+#followup-box {
+  margin-top: 18px;
+  background-color: #000000;              /* black like input box */
+  border: 2px solid #f8c600;              /* Dal gold border */
+  border-radius: 12px;
+  padding: 16px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 0 8px rgba(248,198,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
-a:visited { color: #0B0080; }  /* Standard visited purple */
-a:hover, a:focus { color: #3366CC; opacity: 1; }
-    
-#out, #out *:not(a) { color: var(--text) !important; }
 
-#out p:last-child,
-#out div:last-child,
-#out *:last-child {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-    
-/* ✅ Force standard blue hyperlinks for accessibility */
-#out a { color: #0645AD !important; }
-#out a:visited { color: #0B0080 !important; }
-#out a:hover, #out a:focus { color: #3366CC !important; opacity: 1; }
-#out, #out * { background: transparent !important; }
-#out blockquote { color: var(--muted) !important; }
-#out table th, #out table td { border-color: var(--border) !important; }
-    
-    pre, code { white-space: pre-wrap; word-break: break-word; }
-    blockquote { margin: 0 0 1em 0; padding-left: 12px;
-      border-left: 4px solid var(--border); color: var(--muted);
-    }
-    table { border-collapse: collapse; width: 100%; margin: .5em 0; }
-    th, td { border: 1px solid var(--border); padding: 8px; vertical-align: top; }
-    h1, h2, h3 { margin-top: 1.2em; }
-    .muted { opacity: .9; color: var(--muted); }
-    .debug {
-      font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      white-space: pre-wrap; margin-top: 8px; color: #ffcccc; display: none;
-    }
-
-    /* 🔹 Follow-up UI */
-    #followup-box {
-      margin-top: 18px;
-      padding: 12px;
-      background: #5a0000;
-      border-radius: 8px;
-      border: 1px solid var(--accent);
-    }
-
-    #followup-text {
-      width: 100%;
-      min-height: 90px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      resize: none;
-      margin: 0;
-      box-sizing: border-box;
-    }
-
-    #followup-btn, #copy-btn {
-      margin-top: 8px;
-      width: 100%;
-      padding: 10px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      transition: opacity .2s;
-    }
-
-    #followup-btn:hover, #copy-btn:hover { opacity: .9; }
-
-    #copy-btn {
-      background: #730000;
-    }
-
-#loading {
-  display: none;
-  text-align: center;
-  margin-top: 10px;
-  font-weight: 600;
-  background-color: #B5121B;   /* McGill red */
-  color: #FFFFFF;              /* White text */
-  padding: 12px 16px;
+/* Follow-up text area */
+#followup-text {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  font-size: 16px;
   border-radius: 8px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border: none;
+  outline: none;
+  resize: none;
+  background-color: #ffffff;
+  color: #000000;
+  margin-bottom: 12px;
+  box-sizing: border-box;
 }
 
-    #loading span { animation: blink 1.4s infinite both; }
-    #loading span:nth-child(2) { animation-delay: .2s; }
-    #loading span:nth-child(3) { animation-delay: .4s; }
-    @keyframes blink { 0%,80%,100%{opacity:0;} 40%{opacity:1;} }
+/* Buttons */
+#followup-btn, #copy-btn {
+  width: 100%;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Submit Follow-Up: Dal gold */
+#followup-btn {
+  background-color: #f8c600;
+  color: #000;
+}
+#followup-btn:hover {
+  background-color: #ffd500;
+}
+
+/* Copy All: Dal blue */
+#copy-btn {
+  background-color: #102f60;
+  color: #ffffff;
+}
+#copy-btn:hover {
+  opacity: 0.9;
+}
+    /* 🔹 Animated dots */
+    #loading{
+      display:none;text-align:center;margin-top:10px;font-weight:600;
+    }
+    #loading span{animation:blink 1.4s infinite both}
+    #loading span:nth-child(2){animation-delay:.2s}
+    #loading span:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -183,57 +178,35 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
   </div>
 
   <script>
-    marked.setOptions({ gfm: true, breaks: true, mangle: false, headerIds: false });
-    const outEl = document.getElementById('out');
-    const dbgEl = document.getElementById('dbg');
-    const showDebug = /[?&]debug=1\b/.test(location.search);
-    const followupBtn = document.getElementById('followup-btn');
-    const followupText = document.getElementById('followup-text');
-    const copyBtn = document.getElementById('copy-btn');
-    const loading = document.getElementById('loading');
-    let linkHandlerAttached = false;
-    let lastAnswer = "";
+    marked.setOptions({gfm:true,breaks:true,mangle:false,headerIds:false});
+    const outEl=document.getElementById('out');
+    const dbgEl=document.getElementById('dbg');
+    const showDebug=/[?&]debug=1\b/.test(location.search);
+    const followupBtn=document.getElementById('followup-btn');
+    const followupText=document.getElementById('followup-text');
+    const copyBtn=document.getElementById('copy-btn');
+    const loading=document.getElementById('loading');
+    let linkHandlerAttached=false;
+    let lastAnswer="";
 
-    function debug(m) {
-      if (!showDebug) return;
-      dbgEl.style.display = 'block';
-      dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
-    }
+    function debug(m){if(!showDebug)return;dbgEl.style.display='block';dbgEl.textContent+=(dbgEl.textContent?'\n':'')+m;}
 
 function removeEmptyBullets() {
-const lists = document.querySelectorAll("ul, ol");
+  const lists = document.querySelectorAll("ul, ol");
   lists.forEach(list => {
     const items = list.querySelectorAll("li");
     items.forEach(li => {
-   if (!li.querySelector('a') && !li.textContent.trim()) li.remove();
+      if (!li.textContent.trim()) li.remove();
     });
     if (!list.textContent.trim()) list.remove();
   });
 }
-
-function removeParagraphBullets() {
-const paras = document.querySelectorAll("p");
-  paras.forEach(p => {
-    const t = p.textContent.trim();
-    if (t === "•" || t === "-" || t === "*" || t === "·") {
-      p.remove();
-    }
-  });
-} 
-
-  function safeRender(md) {
+    
+function safeRender(md) {
   const raw = String(md || '');
-  
-  // Step 1: Remove bullet-only lines before markdown parse
-  const raw2 = raw
-    // Remove lines that contain ONLY “-”, “•”, or whitespace
-  .replace(/^(?!.*https?:\/\/)[\s•-]+$/gm, '')
 
-    // Remove literal bullet characters that the model sometimes inserts
-.replace(/^\s*•\s+(?!https?:\/\/)/gm, '');
-
-  // Step 2: Strip control tags (START, END, COMPLETED, DONE)
-  const cleaned = raw2
+  // ✅ Strip control tags (e.g., <<START ANSWER>>, [COMPLETED], etc.)
+  const cleaned = raw
     .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
     .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
     .replace(/\[+COMPLETED+\]/gi, '')
@@ -241,178 +214,149 @@ const paras = document.querySelectorAll("p");
     .trim();
 
   const html = marked.parse(cleaned);
-      const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
-      let linked = clean1;
-      try {
-        if (typeof linkifyHtml === 'function') {
-          linked = linkifyHtml(clean1, {
-            defaultProtocol: 'https', nl2br: false,
-            validate: { url: (v) => /^https?:\/\//i.test(v) },
-            attributes: { rel: 'noopener', target: '_blank' }
-          });
-        }
-      } catch (e) { debug('linkify error:' + e); }
-
-let clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
-
-// remove empty/blank paragraph nodes that create whitespace gaps
-clean2 = clean2
-  .replace(/<p><br><\/p>/g, '')
-  .replace(/<p>\s*<\/p>/g, '');
-
-if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
-outEl.innerHTML += clean2;
-
-// remove nodes that are empty or whitespace-only
-  [...temp.childNodes].forEach(node => {
-    if (node.nodeType === 1 && !node.textContent.trim()) node.remove();
-    if (node.nodeType === 3 && !node.textContent.trim()) node.remove();
-  });
-
-  outEl.append(...temp.childNodes);
-  // 🔥 SURGICAL REPLACEMENT ENDS HERE
-}
-    
-      lastAnswer = outEl.innerText;
-      outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
-
-      if (!linkHandlerAttached) {
-        outEl.addEventListener('click', e => {
-          const a = e.target.closest && e.target.closest('a[href]');
-          if (!a) return;
-          const url = a.href;
-          if (/^https?:/i.test(url)) {
-            e.preventDefault();
-            try { ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url); }
-            catch (err) { window.location.assign(url); }
-          }
-        });
-        linkHandlerAttached = true;
-      }
-    }
-
-    let firstMessageReceived = false;
-    let readyPingerId = null;
-
-    ThunkableWebviewerExtension.receiveMessage(function (msg) {
-      try {
-        firstMessageReceived = true;
-        if (readyPingerId) { clearInterval(readyPingerId); readyPingerId = null; }
-        const payload = (msg && typeof msg === 'object' && 'payload' in msg) ? msg.payload : msg;
-        safeRender(payload);
-      } catch (err) {
-        outEl.textContent = 'Render error:' + err;
-        debug('Render error:' + (err && err.stack || err));
-      }
-    });
-
-    function pingReady() {
-      try { ThunkableWebviewerExtension.postMessage('ready'); }
-      catch (e) { debug('postMessage error:' + e); }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      pingReady();
-      let tries = 0;
-      readyPingerId = setInterval(() => {
-        if (firstMessageReceived || tries >= 10) {
-          clearInterval(readyPingerId);
-          readyPingerId = null;
-          return;
-        }
-        pingReady(); tries++;
-      }, 600);
-    });
-
-    // ✅ Universal Copy-All handler
-    copyBtn.onclick = () => {
-      const content = document.getElementById("out").innerText.trim();
-      if (!content) {
-        alert("No response yet to copy.");
-        return;
-      }
-      try {
-        navigator.clipboard.writeText(content)
-          .then(() => {
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => (copyBtn.textContent = "Copy All"), 1500);
-          })
-          .catch(() => {
-            const temp = document.createElement("textarea");
-            temp.value = content;
-            temp.style.position = "fixed";
-            temp.style.opacity = "0";
-            document.body.appendChild(temp);
-            temp.select();
-            try {
-              document.execCommand("copy");
-              copyBtn.textContent = "Copied!";
-              setTimeout(() => (copyBtn.textContent = "Copy All"), 1500);
-            } catch (e2) {
-              alert("Clipboard not supported in this environment.");
-            }
-            document.body.removeChild(temp);
-          });
-      } catch (err) {
-        console.log("Copy error:", err);
-        alert("Clipboard not supported in this environment.");
-      }
-    };
-
-followupBtn.onclick = async () => {
-  const q = followupText.value.trim();
-  if (!q) return;
-
-  // ✅ Only show one "Answer coming..." message, not duplicated
-  if (!document.getElementById("loading-active")) {
-    const tempLoading = document.createElement("div");
-    tempLoading.id = "loading-active";
-    tempLoading.style.textAlign = "center";
-    tempLoading.style.background = "#B5121B";
-    tempLoading.style.color = "#FFFFFF";
-    tempLoading.style.padding = "12px 16px";
-    tempLoading.style.borderRadius = "8px";
-    tempLoading.style.width = "fit-content";
-    tempLoading.style.margin = "12px auto";
-    tempLoading.textContent = "Answer coming...";
-    outEl.appendChild(tempLoading);
-  }
-
-  loading.style.display = 'block';
-  followupBtn.disabled = true;
+  const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+  let linked = clean1;
 
   try {
-    const res = await fetch('https://mcgillcombinedacrabackend-production.up.railway.app/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify({ question: q })
+    if (typeof linkifyHtml === 'function') {
+      linked = linkifyHtml(clean1, {
+        defaultProtocol: 'https',
+        nl2br: false,
+        validate: { url: (v) => /^https?:\/\//i.test(v) },
+        attributes: { rel: 'noopener', target: '_blank' }
+      });
+    }
+  } catch (e) { debug('linkify error:' + e); }
+
+  const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
+
+  if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
+  outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
+  removeEmptyBullets();
+  lastAnswer = outEl.innerText;
+
+  outEl.querySelectorAll('a').forEach(a => {
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+
+  if (!linkHandlerAttached) {
+    outEl.addEventListener('click', e => {
+      const a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      const url = a.href;
+      if (/^https?:/i.test(url)) {
+        e.preventDefault();
+        try {
+          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
+        } catch (err) {
+          window.location.assign(url);
+        }
+      }
     });
+    linkHandlerAttached = true;
+  }
+}
+    let firstMessageReceived=false;let readyPingerId=null;
 
-    const data = await res.json();
+// ✅ FIX: Replicate McGill’s timing to ensure clean tag removal
+ThunkableWebviewerExtension.receiveMessage(function(msg){
+  try {
+    firstMessageReceived = true;
+    if (readyPingerId) {
+      clearInterval(readyPingerId);
+      readyPingerId = null;
+    }
 
-    // ✅ Remove temporary loading indicator before rendering
-    const oldLoading = document.getElementById("loading-active");
-    if (oldLoading) oldLoading.remove();
-
-    // ✅ Append new answer below previous ones
-    safeRender(data.answer || '(no response)');
-
-    // ✅ Limit verified source dump & replace placeholders
-    limitVerifiedSources();
+    // ⏳ Delay rendering slightly so DOMPurify/marked are ready
+    setTimeout(() => {
+      const payload =
+        msg && typeof msg === 'object' && 'payload' in msg
+          ? msg.payload
+          : msg;
+      safeRender(payload);
+    }, 50); // ~50 ms replicates McGill’s “Answer coming…” timing
 
   } catch (err) {
-    const oldLoading = document.getElementById("loading-active");
-    if (oldLoading) oldLoading.remove();
-    safeRender('⚠️ Error sending follow-up: ' + err.message);
-    console.error('Fetch error:', err);
+    outEl.textContent = 'Render error:' + err;
+    debug('Render error:' + (err && err.stack || err));
+  }
+});
+
+    function pingReady(){
+      try{ThunkableWebviewerExtension.postMessage('ready');}
+      catch(e){debug('postMessage error:'+e);}
+    }
+    window.addEventListener('DOMContentLoaded',()=>{
+      pingReady();
+      let tries=0;
+      readyPingerId=setInterval(()=>{
+        if(firstMessageReceived||tries>=10){clearInterval(readyPingerId);readyPingerId=null;return;}
+        pingReady();tries++;
+      },600);
+    });
+
+// ✅ Universal Copy-All handler (works in Thunkable & all browsers)
+copyBtn.onclick = () => {
+  const content = document.getElementById("out").innerText.trim();
+  if (!content) {
+    alert("No response yet to copy.");
+    return;
   }
 
-  loading.style.display = 'none';
-  followupBtn.disabled = false;
-  followupText.value = '';
+  try {
+    // Try the secure Clipboard API first
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy All"), 1500);
+      })
+      .catch(() => {
+        // 🔹 Fallback for WebViewer / iOS sandbox
+        const temp = document.createElement("textarea");
+        temp.value = content;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+          document.execCommand("copy");
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => (copyBtn.textContent = "Copy All"), 1500);
+        } catch (e2) {
+          alert("Clipboard not supported in this environment.");
+        }
+        document.body.removeChild(temp);
+      });
+  } catch (err) {
+    console.log("Copy error:", err);
+    alert("Clipboard not supported in this environment.");
+  }
 };
 
-// ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+    followupBtn.onclick=async()=>{
+      const q=followupText.value.trim();
+      if(!q)return;
+      loading.style.display='block';
+      followupBtn.disabled=true;
+      try{
+  const res = await fetch('https://web-production-43cb.up.railway.app/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: q })
+  });
+        const data=await res.json();
+        safeRender(data.answer||'(no response)');
+      }catch(err){
+        safeRender('⚠️ Error sending follow-up: '+err.message);
+        limitVerifiedSources(); // ✅ NEW: clean and shorten verified links
+      }
+      loading.style.display='none';
+      followupBtn.disabled=false;
+      followupText.value='';
+    };
+
+// ✅ Trim and rename verified source links like McGill
 function limitVerifiedSources() {
   const links = outEl.querySelectorAll('#out a[href]');
 
@@ -430,11 +374,9 @@ function limitVerifiedSources() {
     }
   });
 
-  // Limit to 8 max visible links
-  if (links.length > 5) {
-    for (let i = 5; i < links.length; i++) {
-      links[i].style.display = 'none';
-    }
+  // Limit to top 8 links only
+  if (links.length > 8) {
+    for (let i = 8; i < links.length; i++) links[i].style.display = 'none';
     const note = document.createElement('div');
     note.textContent = '(showing top 8 verified sources)';
     note.style.textAlign = 'center';
@@ -444,6 +386,7 @@ function limitVerifiedSources() {
     outEl.appendChild(note);
   }
 }
+    
   </script>
 </body>
 </html>
