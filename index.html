@@ -192,6 +192,9 @@ function removeParagraphBullets() {
 function safeRender(md) {
   const raw = String(md || '');
 
+  // 🔥 Remove stray bullet-only lines before markdown parsing
+  const raw2 = raw.replace(/^\s*[•\-\*·]\s*$/gm, '');
+
   // ✅ Strip control tags (START, END, COMPLETED, DONE)
   const cleaned = raw
     .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
