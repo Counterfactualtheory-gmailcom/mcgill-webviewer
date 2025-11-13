@@ -197,7 +197,11 @@ const paras = document.querySelectorAll("p");
       p.remove();
     }
   });
-}   
+} 
+
+  function safeRender(md) {
+  const raw = String(md || '');
+  
   // Step 1: Remove bullet-only lines before markdown parse
   const raw2 = raw
     // Remove lines that contain ONLY “-”, “•”, or whitespace
