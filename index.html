@@ -172,6 +172,17 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
     }
 
+function removeEmptyBullets() {
+  const lists = document.querySelectorAll("#out ul, #out ol");
+  lists.forEach(list => {
+    const items = list.querySelectorAll("li");
+    items.forEach(li => {
+      if (!li.textContent.trim()) li.remove();
+    });
+    if (!list.textContent.trim()) list.remove();
+  });
+}
+    
 function safeRender(md) {
   const raw = String(md || '');
 
