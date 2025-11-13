@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>McGill COMPAiSS Viewer</title>
 
-<style>
-  /* ✅ Remove unwanted bullet dots and emoji markers in the output */
-  #out ul,
-  #out ol {
-    list-style-type: none !important;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-  }
+  <style>
+    /* ✅ Remove unwanted bullet dots and emoji markers in the output */
+    #out ul,
+    #out ol {
+      list-style-type: none !important;
+      padding-left: 0 !important;
+      margin-left: 0 !important;
+    }
 
-  #out li::before {
-    content: none !important;
-  }
+    #out li::before {
+      content: none !important;
+    }
 
     :root {
       --wrap: 900px;
@@ -30,6 +30,19 @@
     }
 
     /* ...rest of your CSS styles... */
+
+  
+  <style>
+  :root {
+    --wrap: 900px;
+    --pad: 16px;
+    --border: #e5e7eb;
+    --accent: #ED1B2F;   /* ✅ McGill Red */
+    --text: #000000;
+    --bg: #696969;       /* Light neutral gray */
+    --bg-page: #f2f2f2;
+    --muted: #ffccd0;    /* Muted light red/pink for blockquotes */
+  }
 
     html, body {
       margin: 0; padding: 0;
@@ -172,83 +185,41 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
     }
 
-function removeEmptyBullets() {
-  const lists = document.querySelectorAll("#out ul, #out ol");
-  lists.forEach(list => {
-    const items = list.querySelectorAll("li");
-    items.forEach(li => {
-      if (!li.textContent.trim()) li.remove();
-    });
-    if (!list.textContent.trim()) list.remove();
-  });
-}
-
-function removeParagraphBullets() {
-  const paras = document.querySelectorAll("#out p");
-  paras.forEach(p => {
-    const t = p.textContent.trim();
-    if (t === "•" || t === "-" || t === "*" || t === "·") {
-      p.remove();
-    }
-  });
-}
-    
-function safeRender(md) {
-  const raw = String(md || '');
-
-  // ✅ Strip control tags (e.g., <<START ANSWER>>, [COMPLETED], etc.)
-  const cleaned = raw
-    .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
-    .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
-    .replace(/\[+COMPLETED+\]/gi, '')
-    .replace(/\[+DONE+\]/gi, '')
-    .trim();
-
-  const html = marked.parse(cleaned);
-  const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
-  let linked = clean1;
-
-  try {
-    if (typeof linkifyHtml === 'function') {
-      linked = linkifyHtml(clean1, {
-        defaultProtocol: 'https',
-        nl2br: false,
-        validate: { url: (v) => /^https?:\/\//i.test(v) },
-        attributes: { rel: 'noopener', target: '_blank' }
-      });
-    }
-  } catch (e) { debug('linkify error:' + e); }
-
-  const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
-
-  if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
-  outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
-  removeEmptyBullets();
-  removeParagraphBullets();
-  lastAnswer = outEl.innerText;
-
-  outEl.querySelectorAll('a').forEach(a => {
-    a.target = '_blank';
-    a.rel = 'noopener';
-  });
-
-  if (!linkHandlerAttached) {
-    outEl.addEventListener('click', e => {
-      const a = e.target.closest && e.target.closest('a[href]');
-      if (!a) return;
-      const url = a.href;
-      if (/^https?:/i.test(url)) {
-        e.preventDefault();
-        try {
-          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
-        } catch (err) {
-          window.location.assign(url);
+    function safeRender(md) {
+      const raw = String(md || '');
+      const html = marked.parse(raw || '');
+      const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+      let linked = clean1;
+      try {
+        if (typeof linkifyHtml === 'function') {
+          linked = linkifyHtml(clean1, {
+            defaultProtocol: 'https', nl2br: false,
+            validate: { url: (v) => /^https?:\/\//i.test(v) },
+            attributes: { rel: 'noopener', target: '_blank' }
+          });
         }
+      } catch (e) { debug('linkify error:' + e); }
+
+      const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
+      if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
+      outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
+      lastAnswer = outEl.innerText;
+      outEl.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+
+      if (!linkHandlerAttached) {
+        outEl.addEventListener('click', e => {
+          const a = e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          const url = a.href;
+          if (/^https?:/i.test(url)) {
+            e.preventDefault();
+            try { ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url); }
+            catch (err) { window.location.assign(url); }
+          }
+        });
+        linkHandlerAttached = true;
       }
-    });
-    linkHandlerAttached = true;
-  }
-}
+    }
 
     let firstMessageReceived = false;
     let readyPingerId = null;
@@ -356,6 +327,9 @@ followupBtn.onclick = async () => {
     // ✅ Append new answer below previous ones
     safeRender(data.answer || '(no response)');
 
+    // ✅ Limit verified source dump & replace placeholders
+    limitVerifiedSources();
+
   } catch (err) {
     const oldLoading = document.getElementById("loading-active");
     if (oldLoading) oldLoading.remove();
@@ -367,6 +341,39 @@ followupBtn.onclick = async () => {
   followupBtn.disabled = false;
   followupText.value = '';
 };
+
+// ✅ Trim excess “Verified Greenlist Source” links & replace placeholder text
+function limitVerifiedSources() {
+  const links = outEl.querySelectorAll('#out a[href]');
+
+  // Replace generic placeholder text with readable host/path
+  links.forEach(a => {
+    if (a.textContent.trim().match(/Verified Greenlist Source/i)) {
+      try {
+        const url = new URL(a.href);
+        const host = url.hostname.replace(/^www\./, '');
+        const path = url.pathname.replace(/\/$/, '');
+        a.textContent = host + path;
+      } catch {
+        a.textContent = a.href;
+      }
+    }
+  });
+
+  // Limit to 8 max visible links
+  if (links.length > 8) {
+    for (let i = 8; i < links.length; i++) {
+      links[i].style.display = 'none';
+    }
+    const note = document.createElement('div');
+    note.textContent = '(showing top 8 verified sources)';
+    note.style.textAlign = 'center';
+    note.style.marginTop = '10px';
+    note.style.fontSize = '14px';
+    note.style.color = '#555';
+    outEl.appendChild(note);
+  }
+}
   </script>
 </body>
 </html>
