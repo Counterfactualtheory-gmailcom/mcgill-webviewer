@@ -183,7 +183,7 @@ const lists = document.querySelectorAll("ul, ol");
   lists.forEach(list => {
     const items = list.querySelectorAll("li");
     items.forEach(li => {
-      if (!li.textContent.trim()) li.remove();
+   if (!li.querySelector('a') && !li.textContent.trim()) li.remove();
     });
     if (!list.textContent.trim()) list.remove();
   });
