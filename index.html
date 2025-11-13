@@ -185,6 +185,16 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
     }
 
+function removeEmptyBullets() {
+  const lists = outEl.querySelectorAll("ul, ol");
+  lists.forEach(list => {
+    const items = list.querySelectorAll("li");
+    items.forEach(li => {
+      if (!li.textContent.trim()) li.remove();   // remove blank bullet
+    });
+    if (!list.textContent.trim()) list.remove(); // remove empty list
+  });
+}
     function safeRender(md) {
       const raw = String(md || '');
 
