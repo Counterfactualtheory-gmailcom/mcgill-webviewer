@@ -187,7 +187,16 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
 
     function safeRender(md) {
       const raw = String(md || '');
-      const html = marked.parse(raw || '');
+
+// ✅ Strip control tags before rendering (match DAL behavior)
+const cleaned = raw
+  .replace(/<+START\s*ANSWER[^>]*>+/gi, '')
+  .replace(/<+END\s*ANSWER[^>]*>+/gi, '')
+  .replace(/\[+COMPLETED+\]/gi, '')
+  .replace(/\[+DONE+\]/gi, '')
+  .trim();
+      
+ const html = marked.parse(cleaned || '');
       const clean1 = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
       let linked = clean1;
       try {
