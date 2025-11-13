@@ -336,8 +336,8 @@ followupBtn.onclick = async () => {
     // ✅ Append new answer below previous ones
     safeRender(data.answer || '(no response)');
 
-    // ✅ Limit verified source dump & replace placeholders
-    limitVerifiedSources();
+  // ❌ Disable all post-answer injections (sources, bullets, extras)
+ // limitVerifiedSources();
 
   } catch (err) {
     const oldLoading = document.getElementById("loading-active");
