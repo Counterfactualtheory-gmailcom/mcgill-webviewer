@@ -48,12 +48,27 @@ a {
 a:visited { color: #0B0080; }  /* Standard visited purple */
 a:hover, a:focus { color: #3366CC; opacity: 1; }
     
-#out, #out *:not(a) { color: var(--text) !important; }
-/* ✅ Force standard blue hyperlinks for accessibility */
+/* 🚫 Prevent horizontal shifting, lock layout */
+#out {
+  color: var(--text) !important;
+  background: transparent !important;
+  overflow-x: hidden;        /* ⭐ prevents sideways movement */
+  width: 100%;               /* ⭐ ensures stable centered layout */
+  box-sizing: border-box;    /* ⭐ consistent padding */
+}
+
+#out * {
+  background: transparent !important;
+  max-width: 100%;           /* ⭐ keeps content inside bounds */
+  box-sizing: border-box;
+}
+
+/* 🔗 Standard accessible hyperlinks */
 #out a { color: #0645AD !important; }
 #out a:visited { color: #0B0080 !important; }
 #out a:hover, #out a:focus { color: #3366CC !important; opacity: 1; }
-#out, #out * { background: transparent !important; }
+
+/* 📝 Blockquotes + tables */
 #out blockquote { color: var(--muted) !important; }
 #out table th, #out table td { border-color: var(--border) !important; }
     
