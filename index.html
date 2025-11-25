@@ -337,7 +337,8 @@ followupBtn.onclick = async () => {
     tempLoading.style.color = "#FFFFFF";
     tempLoading.style.padding = "12px 16px";
     tempLoading.style.borderRadius = "8px";
-    tempLoading.style.width = "fit-content";
+    tempLoading.style.width = "100%";       /* ⭐ fixes shifting */
+    tempLoading.style.boxSizing = "border-box"; /* ⭐ keeps centering consistent */
     tempLoading.style.margin = "12px auto";
     tempLoading.textContent = "Answer coming...";
     outEl.appendChild(tempLoading);
