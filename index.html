@@ -95,18 +95,20 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       margin-left: -4px;
     }
 
-    #followup-text {
-      width: calc(100% - 3px);
-      min-height: 90px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      resize: none;
-      margin: 0;
-      box-sizing: border-box;
-    }
+#followup-text {
+  width: 100%;
+  position: relative;
+  left: -3px;          /* ← matches button shift */
+  min-height: 90px;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  resize: none;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 #followup-btn,
 #copy-btn {
