@@ -92,6 +92,7 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       background: #5a0000;
       border-radius: 8px;
       border: 1px solid var(--accent);
+      margin-left: -4px;
     }
 
     #followup-text {
@@ -107,18 +108,23 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
       box-sizing: border-box;
     }
 
-    #followup-btn, #copy-btn {
-      margin-top: 8px;
-      width: 100%;
-      padding: 10px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      transition: opacity .2s;
-    }
+#followup-btn,
+#copy-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: opacity .2s;
+
+  font-size: 17px;   /* ← increased font size */
+  position: relative;
+  left: -3px;        /* ← slight left shift */
+}
 
     #followup-btn:hover, #copy-btn:hover { opacity: .9; }
 
