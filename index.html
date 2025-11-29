@@ -273,6 +273,7 @@ function safeRender(md) {
         if (readyPingerId) { clearInterval(readyPingerId); readyPingerId = null; }
         const payload = (msg && typeof msg === 'object' && 'payload' in msg) ? msg.payload : msg;
         safeRender(payload);
+        document.dispatchEvent(new Event("ANSWER_RENDERED"));
       } catch (err) {
         outEl.textContent = 'Render error:' + err;
         debug('Render error:' + (err && err.stack || err));
