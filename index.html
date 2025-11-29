@@ -420,25 +420,44 @@ function limitVerifiedSources() {
   </script>
 
 <script>
+/* -------------------------------------------------------
+   AUTO-RETURN FIX — FINAL STABLE VERSION
+   • timer activates ONLY after first answer arrives
+   • eliminates blank-screen on restore after long minimize
+   • prevents redirect while user is active
+   • prevents redirect BEFORE handshake (critical fix)
+-------------------------------------------------------- */
+
 const RETURN_DELAY = 3 * 60 * 1000; // 3 minutes
-let timer;
+let returnTimer = null;
+let handshakeDone = false;
 
+/* Called ONLY after the first safeRender() finishes */
+function enableAutoReturnTimer() {
+  handshakeDone = true;
+  resetReturnTimer();
+}
+
+/* Redirect safely to input */
 function goToInput() {
-  const url = window.location.href.replace("index.html", "") + "index_input.html";
-  window.location.replace(url);
+  const base = window.location.href.replace("index.html", "");
+  window.location.href = base + "index_input.html";
 }
 
-function resetTimer() {
-  clearTimeout(timer);
-  timer = setTimeout(goToInput, RETURN_DELAY);
+/* Reset timer if handshake completed */
+function resetReturnTimer() {
+  if (!handshakeDone) return;
+  clearTimeout(returnTimer);
+  returnTimer = setTimeout(goToInput, RETURN_DELAY);
 }
 
-resetTimer();
-document.addEventListener("touchstart", resetTimer, { passive: true });
-document.addEventListener("click", resetTimer);
-document.addEventListener("scroll", resetTimer);
-document.addEventListener("keydown", resetTimer);
+/* Real gestures keep session alive */
+["touchstart", "click", "scroll", "keydown"].forEach(evt => {
+  document.addEventListener(evt, resetReturnTimer, { passive: true });
+});
+
+/* Handshake event fired after safeRender() completes */
+document.addEventListener("ANSWER_RENDERED", enableAutoReturnTimer);
 </script>
-
 </body>
 </html>
