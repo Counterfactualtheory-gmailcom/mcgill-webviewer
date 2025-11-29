@@ -422,28 +422,31 @@ function limitVerifiedSources() {
 
 <script>
 /* -------------------------------------------------------
-   AUTO-RETURN USING DIRECT URL (NO THUNKABLE DEPENDENCY)
+   FINAL AUTO-RETURN PATCH (WORKS WITH THUNKABLE + URL NAV)
 -------------------------------------------------------- */
 
-const RETURN_DELAY = 3 * 60 * 1000; // 3 minutes
-let timer = null;
-let hasRendered = false;
+const RETURN_DELAY = 3 * 60 * 1000;   // 3 minutes
+let returnTimer = null;
+let firstRealAnswer = false;
 
-// Your actual INPUT SCREEN URL:
-const INPUT_URL = "https://counterfactualtheory-gmailcom.github.io/mcgill-webviewer/index_input.html";
-
-// Only start the timer after the FIRST real answer is shown
+/* Triggered ONLY after safeRender() finishes a full answer */
 document.addEventListener("ANSWER_RENDERED", () => {
-  hasRendered = true;
 
-  clearTimeout(timer);
-  timer = setTimeout(() => {
+  // Prevent early triggers — only count actual answers
+  if (!firstRealAnswer) {
+    firstRealAnswer = true;
+  }
+
+  clearTimeout(returnTimer);
+  returnTimer = setTimeout(() => {
     try {
-      window.location.href = INPUT_URL;
+      window.location.href =
+        "https://counterfactualtheory-gmailcom.github.io/mcgill-webviewer/index_input.html";
     } catch (err) {
-      console.log("Auto-return failed:", err);
+      console.log("Auto-return navigation failed:", err);
     }
   }, RETURN_DELAY);
+
 });
 </script>
 </body>
