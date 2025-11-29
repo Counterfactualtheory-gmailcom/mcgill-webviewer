@@ -422,28 +422,20 @@ function limitVerifiedSources() {
 
 <script>
 /* -------------------------------------------------------
-   PERFECT AUTO-RETURN (NO FREEZING, NO URL LOAD)
-   Sends message to Thunkable → Thunkable switches screens
+   FORCE WEBVIEWER HANDSHAKE RESTART AFTER AUTO-RETURN
 -------------------------------------------------------- */
+function sendReady() {
+  try {
+    ThunkableWebviewerExtension.postMessage("ready");
+  } catch (_) {}
+}
 
-const RETURN_DELAY = 3 * 60 * 1000;   // 3 minutes
-let returnTimer = null;
-let firstRealAnswer = false;
+/* Fire READY on page load */
+window.addEventListener("load", sendReady);
 
-document.addEventListener("ANSWER_RENDERED", () => {
-
-  if (!firstRealAnswer) firstRealAnswer = true;
-
-  clearTimeout(returnTimer);
-  returnTimer = setTimeout(() => {
-    try {
-      ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT");
-    } catch (err) {
-      console.log("Auto-return failed:", err);
-    }
-  }, RETURN_DELAY);
-
-});
+/* Fire READY again (Thunkable sometimes drops the first one) */
+setTimeout(sendReady, 300);
+setTimeout(sendReady, 800);
 </script>
 </body>
 </html>
