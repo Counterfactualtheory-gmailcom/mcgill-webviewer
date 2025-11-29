@@ -442,7 +442,7 @@ function enableAutoReturnTimer() {
 /* Redirect safely to input */
 function goToInput() {
   const base = window.location.href.replace("index.html", "");
-  window.location.href = base + "index_input.html";
+  window.location.replace(base + "index_input.html");
 }
 
 /* Reset timer if handshake completed */
