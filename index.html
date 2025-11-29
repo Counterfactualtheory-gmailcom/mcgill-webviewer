@@ -164,7 +164,7 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
 
 <body>
   <div class="wrap">
-<div id="out"></div>
+    <div id="out">Waiting for content…</div>
 
     <div id="followup-box">
       <textarea id="followup-text" placeholder="Type a follow-up question or add more information..."></textarea>
@@ -273,7 +273,6 @@ function safeRender(md) {
         if (readyPingerId) { clearInterval(readyPingerId); readyPingerId = null; }
         const payload = (msg && typeof msg === 'object' && 'payload' in msg) ? msg.payload : msg;
         safeRender(payload);
-        document.dispatchEvent(new Event("ANSWER_RENDERED"));
       } catch (err) {
         outEl.textContent = 'Render error:' + err;
         debug('Render error:' + (err && err.stack || err));
@@ -421,37 +420,25 @@ function limitVerifiedSources() {
   </script>
 
 <script>
-/* -------------------------------------------------------
-   FINAL — NO DUPLICATION — BRIDGE RECOVERY PATCH
-   (Fixes blank screen on resume without repeating answers)
--------------------------------------------------------- */
+const RETURN_DELAY = 3 * 60 * 1000; // 3 minutes
+let timer;
 
-let bridgeWasSeen = false;
+function goToInput() {
+  const url = window.location.href.replace("index.html", "") + "index_input.html";
+  window.location.replace(url);
+}
 
-// When ANY message is received from Thunkable, bridge is alive
-ThunkableWebviewerExtension.receiveMessage(function(msg) {
-  bridgeWasSeen = true;
-});
+function resetTimer() {
+  clearTimeout(timer);
+  timer = setTimeout(goToInput, RETURN_DELAY);
+}
 
-// When app returns to foreground, send 1 READY
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") {
-    try {
-      ThunkableWebviewerExtension.postMessage("ready");
-      bridgeWasSeen = false; // expect a reply
-    } catch (_) {}
-  }
-});
-
-// Heartbeat: send READY only if nothing has been received
-setInterval(() => {
-  if (!bridgeWasSeen) {
-    try {
-      ThunkableWebviewerExtension.postMessage("ready");
-    } catch (_) {}
-  }
-  bridgeWasSeen = false;
-}, 2000);
+resetTimer();
+document.addEventListener("touchstart", resetTimer, { passive: true });
+document.addEventListener("click", resetTimer);
+document.addEventListener("scroll", resetTimer);
+document.addEventListener("keydown", resetTimer);
 </script>
+
 </body>
 </html>
