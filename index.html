@@ -422,18 +422,19 @@ function limitVerifiedSources() {
 
 <script>
 /* -------------------------------------------------------
-   ABSOLUTE BRIDGE-RECOVERY PATCH
-   (Prevents blank screen after minimize + resume)
+   STABLE BRIDGE-RECOVERY PATCH
+   (Prevents blank screen after minimize without causing
+    duplicate rendering or message spam)
 -------------------------------------------------------- */
 
 let bridgeAlive = false;
 
-// Receive messages from Thunkable
-ThunkableWebviewerExtension.receiveMessage(function(msg) {
+// Thunkable sends ANY message → bridge is alive
+ThunkableWebviewerExtension.receiveMessage(function () {
   bridgeAlive = true;
 });
 
-// Re-send READY every time the app returns to foreground
+// When the app returns to foreground, softly re-announce readiness
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") {
     try {
@@ -442,15 +443,16 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// If no message arrives for 1 second after resume, send READY again
+// Heartbeat check every 1500ms (NO payload, NO re-render)
 setInterval(() => {
   if (!bridgeAlive) {
     try {
       ThunkableWebviewerExtension.postMessage("ready");
     } catch (_) {}
   }
+  // Reset for next interval
   bridgeAlive = false;
-}, 1000);
+}, 1500);
 </script>
 </body>
 </html>
