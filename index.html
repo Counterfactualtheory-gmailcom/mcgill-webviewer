@@ -422,28 +422,24 @@ function limitVerifiedSources() {
 
 <script>
 /* -------------------------------------------------------
-   FINAL AUTO-RETURN PATCH (WORKS WITH THUNKABLE + URL NAV)
+   PERFECT AUTO-RETURN (NO FREEZING, NO URL LOAD)
+   Sends message to Thunkable → Thunkable switches screens
 -------------------------------------------------------- */
 
 const RETURN_DELAY = 3 * 60 * 1000;   // 3 minutes
 let returnTimer = null;
 let firstRealAnswer = false;
 
-/* Triggered ONLY after safeRender() finishes a full answer */
 document.addEventListener("ANSWER_RENDERED", () => {
 
-  // Prevent early triggers — only count actual answers
-  if (!firstRealAnswer) {
-    firstRealAnswer = true;
-  }
+  if (!firstRealAnswer) firstRealAnswer = true;
 
   clearTimeout(returnTimer);
   returnTimer = setTimeout(() => {
     try {
-      window.location.href =
-        "https://counterfactualtheory-gmailcom.github.io/mcgill-webviewer/index_input.html";
+      ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT");
     } catch (err) {
-      console.log("Auto-return navigation failed:", err);
+      console.log("Auto-return failed:", err);
     }
   }, RETURN_DELAY);
 
