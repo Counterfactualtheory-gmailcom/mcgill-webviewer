@@ -58,6 +58,13 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
   word-wrap: break-word;
 }
 
+/* ⭐ FORCE ALL INNER ELEMENTS TO STAY INSIDE BORDER */
+#out * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  word-wrap: break-word !important;
+}
+    
 /* 🔗 Standard accessible hyperlinks */
 #out a { color: #0645AD !important; }
 #out a:visited { color: #0B0080 !important; }
