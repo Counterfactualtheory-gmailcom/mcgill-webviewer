@@ -47,13 +47,18 @@ a {
 a:visited { color: #0B0080; }  /* Standard visited purple */
 a:hover, a:focus { color: #3366CC; opacity: 1; }
     
-/* 🚫 Prevent horizontal shifting, lock layout */
+/* 🚫 Prevent horizontal shifting, lock layout — FINAL FIX */
 #out {
-  color: var(--text) !important;
-  background: transparent !important;
-  overflow-x: hidden;        /* ⭐ prevents sideways movement */
-  width: 100%;               /* ⭐ ensures stable centered layout */
-  box-sizing: border-box;    /* ⭐ consistent padding */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#out * {
+  max-width: 100%;
+  box-sizing: border-box;
   word-wrap: break-word;
 }
 
