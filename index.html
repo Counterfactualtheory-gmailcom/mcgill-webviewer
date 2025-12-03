@@ -441,14 +441,6 @@ function limitVerifiedSources() {
           });
       }
   });
-
-  // Every time we render an answer, store a hard backup
-  const originalSafeRender = safeRender;
-  safeRender = function(md) {
-      originalSafeRender(md);
-      const out = document.getElementById("out");
-      if (out) window.lastAnswerBackup = out.innerHTML;
-  };
 </script>
 
 </body>
