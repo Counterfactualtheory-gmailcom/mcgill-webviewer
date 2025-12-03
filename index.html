@@ -252,6 +252,7 @@ function safeRender(md) {
   } catch (_) {}
 
   const final = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
+  lastSingleAnswer = final;
 
 // ⭐ Insert into output
 if (outEl.textContent.includes('Waiting for content')) {
