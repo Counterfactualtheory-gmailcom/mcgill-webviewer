@@ -258,8 +258,6 @@ function safeRender(md) {
   }
   outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + final;
 
-  lastAnswer = outEl.innerText;
-
   // Ensure link safety
   outEl.querySelectorAll('a').forEach(a => {
     a.target = '_blank';
