@@ -252,12 +252,15 @@ function safeRender(md) {
 
   const final = DOMPurify.sanitize(linked, { ADD_ATTR: ['target', 'rel'] });
 
-  // ⭐ Insert into output
-  if (outEl.textContent.includes('Waiting for content')) {
-    outEl.innerHTML = '';
-  }
-  outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + final;
+// ⭐ Insert into output
+if (outEl.textContent.includes('Waiting for content')) {
+  outEl.innerHTML = '';
+}
+outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + final;
 
+// ⭐ Store the most recent clean HTML block (required for Copy + Restore)
+window.lastAnswerBackup = final;
+  
   // Ensure link safety
   outEl.querySelectorAll('a').forEach(a => {
     a.target = '_blank';
