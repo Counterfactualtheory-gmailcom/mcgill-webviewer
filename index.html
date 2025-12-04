@@ -56,17 +56,13 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
   padding: 0;
 }
 
-#out * {
+/* Clean, safe, container-only layout rules */
+#out {
+  width: 100%;
   max-width: 100%;
-  box-sizing: border-box;
+  overflow-x: hidden;
   word-wrap: break-word;
-}
-
-/* ⭐ FORCE ALL INNER ELEMENTS TO STAY INSIDE BORDER */
-#out * {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  word-wrap: break-word !important;
+  box-sizing: border-box;
 }
     
 /* 🔗 Standard accessible hyperlinks */
