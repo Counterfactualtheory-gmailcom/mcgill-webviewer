@@ -295,7 +295,9 @@ window.lastAnswerBackup = final;
         firstMessageReceived = true;
         if (readyPingerId) { clearInterval(readyPingerId); readyPingerId = null; }
         const payload = (msg && typeof msg === 'object' && 'payload' in msg) ? msg.payload : msg;
+        setTimeout(() => {
         safeRender(payload);
+        }, 50);    
       } catch (err) {
         outEl.textContent = 'Render error:' + err;
         debug('Render error:' + (err && err.stack || err));
