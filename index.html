@@ -256,6 +256,23 @@ if (outEl.textContent.includes('Waiting for content')) {
 }
 outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + final;
 
+/* -----------------------------------------------------------
+   DAL-STYLE BULLET CLEANUP — major DOM mutation (testable)
+----------------------------------------------------------- */
+function removeEmptyBullets() {
+  const lists = document.querySelectorAll("ul, ol");
+  lists.forEach(list => {
+    const items = list.querySelectorAll("li");
+    items.forEach(li => {
+      if (!li.textContent.trim()) li.remove();
+    });
+    if (!list.textContent.trim()) list.remove();
+  });
+}
+removeEmptyBullets();
+
+/* ----------------------------------------------------------- */
+  
 // ⭐ Store the most recent clean HTML block (required for Copy + Restore)
 window.lastAnswerBackup = final;
   
