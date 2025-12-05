@@ -64,7 +64,17 @@ a:hover, a:focus { color: #3366CC; opacity: 1; }
   word-wrap: break-word;
   box-sizing: border-box;
 }
-    
+
+/* ⭐ Fix clipped first line in WebViewer */
+#out {
+  padding-top: 8px !important;
+  line-height: 1.4 !important;
+}
+
+#out p:first-child {
+  margin-top: 8px !important;
+}
+   
 /* 🔗 Standard accessible hyperlinks */
 #out a { color: #0645AD !important; }
 #out a:visited { color: #0B0080 !important; }
