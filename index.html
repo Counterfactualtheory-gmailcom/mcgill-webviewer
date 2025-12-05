@@ -224,13 +224,27 @@ th, td {
 function safeRender(md) {
   let cleaned = String(md || '');
 
-  // 🚫 Remove backend-injected SOURCES / Verified Greenlist Source dumps
-  cleaned = cleaned
-    .replace(/^SOURCES:\s*$/gim, '')                                // remove SOURCES: line
-    .replace(/^[ \t]*[-*•]\s*.*Verified Greenlist Source.*$/gim, '') // remove whole bullet lines
-    .replace(/Verified Greenlist Source/gi, '')                     // remove leftover text
-    .replace(/^\s*$/gm, '');                                        // remove empty leftover lines
+// 🚫 Remove backend-injected McGill source dumps (all variants)
+cleaned = cleaned
+  // Remove SOURCES: header
+  .replace(/^SOURCES:\s*$/gim, '')
 
+  // Remove full lines containing McGill placeholder
+  .replace(/^.*Verified McGill Source.*$/gim, '')
+
+  // Remove bulleted variations
+  .replace(/^[ \t]*[-*•]\s*Verified McGill Source.*$/gim, '')
+
+  // Remove inline occurrences
+  .replace(/Verified McGill Source/gi, '')
+
+  // Remove generic fallback patterns
+  .replace(/^.*Verified Source.*$/gim, '')
+  .replace(/Verified Source/gi, '')
+
+  // Remove empty leftover lines after stripping
+  .replace(/^\s*$/gm, '');
+  
   // 🚫 Remove accidental list markers (general safety)
   cleaned = cleaned
     .replace(/^[-*]\s+/gm, '')
