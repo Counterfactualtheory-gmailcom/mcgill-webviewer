@@ -471,24 +471,5 @@ function limitVerifiedSources() {
 */
   </script>
 
-<script>
-  // Prevent blank screen after app is minimized / dormant
-  document.addEventListener("visibilitychange", () => {
-      // When returning from background
-      if (!document.hidden) {
-          // Force DOM repaint and WebView rehydrate
-          requestAnimationFrame(() => {
-              const out = document.getElementById("out");
-              if (out && out.innerHTML.trim() === "") {
-                  // If WebView purged content, reload last known answer
-                  if (window.lastAnswerBackup) {
-                      out.innerHTML = window.lastAnswerBackup;
-                  }
-              }
-          });
-      }
-  });
-</script>
-
 </body>
 </html>
