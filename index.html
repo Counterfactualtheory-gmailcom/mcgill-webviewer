@@ -323,13 +323,13 @@ if (!linkHandlerAttached) {
 }
 }
 
-<!-- RESTORE BLOCK INSERTS HERE -->
 // === RESTORE LAST ANSWER AFTER WEBVIEW RELOAD ===
 window.addEventListener("DOMContentLoaded", () => {
-  const out = document.getElementById("out");
+  const outEl = document.getElementById("out");
 
-  if (out && window.lastAnswerBackup && out.textContent.includes("Waiting for content")) {
-    out.innerHTML = window.lastAnswerBackup;
+  // Restore only when WebView truly reloaded
+  if (outEl && window.lastAnswerBackup && outEl.textContent.includes("Waiting for content")) {
+    outEl.innerHTML = window.lastAnswerBackup;
   }
 });
     
