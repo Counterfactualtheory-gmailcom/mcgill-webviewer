@@ -285,18 +285,23 @@ if (outEl.textContent.includes('Waiting for content')) {
 }
 outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + final;
 
-// ⭐ Restore OLD open-in-WebViewer behavior (correct, stable, no Safari)
+// ⭐ Strong iOS-safe WebViewer link handler (prevents Safari sheet)
 if (!window.linkHandlerAttached) {
   outEl.addEventListener("click", function (e) {
     const a = e.target.closest && e.target.closest("a[href]");
     if (!a) return;
 
+    e.preventDefault();      // block Safari navigation
+    e.stopPropagation();     // ⭐ block long-press “Open / Copy / Share” menu
+
     const url = a.href;
 
-    // Only intercept real http/https external links
     if (/^https?:\/\//i.test(url)) {
-      e.preventDefault();
-      window.open(url, "_blank");   // ⭐ Opens inside Thunkable WebViewer tab
+      try {
+        window.open(url, "_blank");   // ⭐ stays inside WebViewer
+      } catch (err) {
+        window.location.assign(url);
+      }
     }
   });
 
