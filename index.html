@@ -292,7 +292,6 @@ if (!window.linkHandlerAttached) {
     if (!a) return;
 
     e.preventDefault();      // block Safari navigation
-    e.stopPropagation();     // ⭐ block long-press “Open / Copy / Share” menu
 
     const url = a.href;
 
