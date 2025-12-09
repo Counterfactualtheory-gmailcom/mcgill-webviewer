@@ -376,6 +376,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     // ✅ Universal Copy handler
+// === UNIVERSAL COPY HANDLER (Markdown-style hyperlinks) ===
 copyBtn.onclick = () => {
   const html = (lastSingleAnswer || "").trim();
   if (!html) {
@@ -383,19 +384,21 @@ copyBtn.onclick = () => {
     return;
   }
 
-  // Convert HTML → DOM container
+  // Create temporary DOM parser
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
 
-  // Convert <a> tags → Markdown hyperlinks
+  // Convert <a> tags → Markdown [label](url)
   tempDiv.querySelectorAll("a[href]").forEach(a => {
-    const mdLink = `[${a.textContent}](${a.href})`;
-    a.replaceWith(mdLink);
+    const label = a.textContent.trim();
+    const url = a.href.trim();
+    const md = `[${label}](${url})`;
+    a.replaceWith(document.createTextNode(md));
   });
 
-  // Extract readable text WITHOUT HTML tags
-  let text = tempDiv.innerText
-    .replace(/\n{3,}/g, "\n\n") // prevent extra blank spacing
+  // Extract readable text without any HTML tags
+  const text = tempDiv.innerText
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 
   try {
@@ -405,14 +408,14 @@ copyBtn.onclick = () => {
     });
   } catch (err) {
     // iOS fallback
-    const temp = document.createElement("textarea");
-    temp.value = text;
-    temp.style.position = "fixed";
-    temp.style.opacity = "0";
-    document.body.appendChild(temp);
-    temp.select();
+    const t = document.createElement("textarea");
+    t.value = text;
+    t.style.position = "fixed";
+    t.style.opacity = "0";
+    document.body.appendChild(t);
+    t.select();
     document.execCommand("copy");
-    document.body.removeChild(temp);
+    document.body.removeChild(t);
 
     copyBtn.textContent = "Copied!";
     setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
