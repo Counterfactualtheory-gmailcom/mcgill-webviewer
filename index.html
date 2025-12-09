@@ -306,23 +306,21 @@ window.lastAnswerBackup = final;
     a.rel = 'noopener';
   });
 
-  // Attach open-in-browser handler ONCE
-  if (!linkHandlerAttached) {
-    outEl.addEventListener('click', e => {
-      const a = e.target.closest && e.target.closest('a[href]');
-      if (!a) return;
-      const url = a.href;
-      if (/^https?:/i.test(url)) {
-        e.preventDefault();
-        try {
-          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
-        } catch (err) {
-          window.location.assign(url);
-        }
-      }
-    });
-    linkHandlerAttached = true;
-  }
+// === SAFE IN-WEBVIEW LINK HANDLER (NO THUNKABLE NAVIGATION) ===
+if (!linkHandlerAttached) {
+  outEl.addEventListener("click", e => {
+    const a = e.target.closest("a[href]");
+    if (!a) return;
+
+    const url = a.href;
+    if (/^https?:/i.test(url)) {
+      e.preventDefault();
+      // Stay inside WebView — NEVER call Thunkable, never switch screens
+      window.location.href = url;
+    }
+  });
+  linkHandlerAttached = true;
+}
 }
     let firstMessageReceived = false;
     let readyPingerId = null;
