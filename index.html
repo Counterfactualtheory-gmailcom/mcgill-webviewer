@@ -295,13 +295,14 @@ if (!window.linkHandlerAttached) {
 
     const url = a.href;
 
-    if (/^https?:\/\//i.test(url)) {
-      try {
-ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
-      } catch (err) {
-        window.location.assign(url);
-      }
-    }
+if (/^https?:\/\/?/i.test(url)) {
+  try {
+    // ⭐ INTERNAL WebViewer navigation (NO Safari)
+    window.location.assign(url);
+  } catch (err) {
+    window.location.href = url;
+  }
+}
   });
 
   window.linkHandlerAttached = true;
