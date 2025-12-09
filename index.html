@@ -383,16 +383,30 @@ copyBtn.onclick = () => {
     return;
   }
 
+  // Convert HTML → DOM container
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+
+  // Convert <a> tags → Markdown hyperlinks
+  tempDiv.querySelectorAll("a[href]").forEach(a => {
+    const mdLink = `[${a.textContent}](${a.href})`;
+    a.replaceWith(mdLink);
+  });
+
+  // Extract readable text WITHOUT HTML tags
+  let text = tempDiv.innerText
+    .replace(/\n{3,}/g, "\n\n") // prevent extra blank spacing
+    .trim();
+
   try {
-    // Copy the raw HTML with all hyperlinks preserved
-    navigator.clipboard.writeText(html).then(() => {
+    navigator.clipboard.writeText(text).then(() => {
       copyBtn.textContent = "Copied!";
       setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
     });
   } catch (err) {
-    // Fallback for iOS WebView
+    // iOS fallback
     const temp = document.createElement("textarea");
-    temp.value = html;
+    temp.value = text;
     temp.style.position = "fixed";
     temp.style.opacity = "0";
     document.body.appendChild(temp);
