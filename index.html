@@ -299,6 +299,7 @@ if (/^https?:\/\/?/i.test(url)) {
   try {
     // ⭐ INTERNAL WebViewer navigation (NO Safari)
     window.location.assign(url);
+    injectReturnButton();
   } catch (err) {
     window.location.href = url;
   }
