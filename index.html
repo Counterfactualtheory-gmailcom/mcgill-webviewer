@@ -451,29 +451,6 @@ function limitVerifiedSources() {
 }
 */
  </script>
-
-<!-- ⭐ NEW GLOBAL LINK HANDLER INSERTED HERE -->
-<script>
-// ============================================================
-// NEW GLOBAL OPEN-IN-BROWSER HANDLER  (SAFE + STABLE)
-// ============================================================
-document.addEventListener("click", function (e) {
-  const a = e.target.closest && e.target.closest("a[href]");
-  if (!a) return;
-
-  const url = a.href;
-
-  if (/^https?:\/\//i.test(url)) {
-    e.preventDefault();
-    try {
-      ThunkableWebviewerExtension.postMessage("OPEN_IN_BROWSER::" + url);
-    } catch (err) {
-      window.location.assign(url);
-    }
-  }
-});
-</script>
-<!-- ⭐ END GLOBAL HANDLER -->
   
 <script>
 // === RETURN TO INPUT SCREEN ON PURGE (NO RELOAD, NO API CALL) ===
