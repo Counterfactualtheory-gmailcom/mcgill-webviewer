@@ -306,7 +306,7 @@ window.lastAnswerBackup = final;
     a.rel = 'noopener';
   });
 
-// === SAFE IN-WEBVIEW LINK HANDLER (NO THUNKABLE NAVIGATION) ===
+// === OPEN LINKS EXTERNALLY (RESTORED ORIGINAL BEHAVIOR) ===
 if (!linkHandlerAttached) {
   outEl.addEventListener("click", e => {
     const a = e.target.closest("a[href]");
@@ -315,10 +315,17 @@ if (!linkHandlerAttached) {
     const url = a.href;
     if (/^https?:/i.test(url)) {
       e.preventDefault();
-      // Stay inside WebView — NEVER call Thunkable, never switch screens
-      window.location.href = url;
+
+      // Open externally — preserves COMPAiSS state
+      try {
+        ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
+      } catch (err) {
+        // Fallback if extension isn't available
+        window.location.assign(url);
+      }
     }
   });
+
   linkHandlerAttached = true;
 }
 }
