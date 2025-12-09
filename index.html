@@ -322,6 +322,19 @@ if (!linkHandlerAttached) {
   linkHandlerAttached = true;
 }
 }
+
+<!-- RESTORE BLOCK INSERTS HERE -->
+<script>
+// === RESTORE LAST ANSWER AFTER WEBVIEW RELOAD ===
+window.addEventListener("DOMContentLoaded", () => {
+  const out = document.getElementById("out");
+
+  if (out && window.lastAnswerBackup && out.textContent.includes("Waiting for content")) {
+    out.innerHTML = window.lastAnswerBackup;
+  }
+});
+</script>
+    
     let firstMessageReceived = false;
     let readyPingerId = null;
 
