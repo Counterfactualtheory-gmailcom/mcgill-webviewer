@@ -511,5 +511,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
+<!-- ⭐⭐⭐ INSERT NEW RETURN BUTTON CODE RIGHT HERE ⭐⭐⭐ -->
+<script>
+// === TINY RETURN-TO-COMPAiSS BUTTON ===================================
+function injectReturnButton() {
+  const btn = document.createElement("button");
+  btn.textContent = "⟵ COMPAiSS";
+  btn.id = "returnBtn";
+
+  btn.style.position = "fixed";
+  btn.style.top = "12px";
+  btn.style.left = "12px";
+  btn.style.zIndex = "999999";
+  btn.style.padding = "6px 10px";
+  btn.style.fontSize = "13px";
+  btn.style.background = "black";
+  btn.style.color = "white";
+  btn.style.border = "none";
+  btn.style.borderRadius = "6px";
+  btn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.3)";
+  btn.style.opacity = "0.82";
+  btn.style.cursor = "pointer";
+
+  btn.onclick = () => {
+    try {
+      ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT");
+    } catch (e) {
+      console.log("Back button message failed:", e);
+    }
+  };
+
+  document.body.appendChild(btn);
+}
+
+window.addEventListener("load", () => {
+  injectReturnButton();
+});
+</script>
+<!-- ⭐⭐⭐ END OF INSERTED CODE ⭐⭐⭐ -->
+
+  
 </body>
 </html>
