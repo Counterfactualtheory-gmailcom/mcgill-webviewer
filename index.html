@@ -324,7 +324,6 @@ if (!linkHandlerAttached) {
 }
 
 <!-- RESTORE BLOCK INSERTS HERE -->
-<script>
 // === RESTORE LAST ANSWER AFTER WEBVIEW RELOAD ===
 window.addEventListener("DOMContentLoaded", () => {
   const out = document.getElementById("out");
@@ -333,7 +332,6 @@ window.addEventListener("DOMContentLoaded", () => {
     out.innerHTML = window.lastAnswerBackup;
   }
 });
-</script>
     
     let firstMessageReceived = false;
     let readyPingerId = null;
