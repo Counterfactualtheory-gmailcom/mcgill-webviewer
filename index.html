@@ -298,7 +298,7 @@ if (!window.linkHandlerAttached) {
 
     if (/^https?:\/\//i.test(url)) {
       try {
-      ThunkableWebviewerExtension.postMessage("OPEN_WEBVIEWER::" + url);
+      window.open(url, "_blank");
       } catch (err) {
         window.location.assign(url);
       }
