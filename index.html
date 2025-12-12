@@ -370,6 +370,11 @@ if (!linkHandlerAttached) {
 // =====================================================
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
+    
+    // 🔥 CLEAR ALL RETAINED ANSWER STATE (CRITICAL)
+    window.lastAnswerBackup = "";
+    window.storedAnswerHTML = "";
+    lastSingleAnswer = "";
 
     // Clear output — must collapse DOM
     const out = document.getElementById("out");
