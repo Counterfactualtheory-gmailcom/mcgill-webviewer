@@ -366,25 +366,6 @@ if (!linkHandlerAttached) {
       }, 600);
     });
 
-// =====================================================
-// iOS WKWebView PURGE HANDLER — DAL-PARITY (DO NOT MOVE)
-// =====================================================
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    
-    // 🔥 CLEAR ALL RETAINED ANSWER STATE (CRITICAL)
-    window.lastAnswerBackup = "";
-    window.storedAnswerHTML = "";
-    lastSingleAnswer = "";
-
-    // Clear output — must collapse DOM
-    const out = document.getElementById("out");
-    if (out) out.innerHTML = "";
-
-  }
-});
-
-    
     // ✅ Universal Copy handler
 // === UNIVERSAL COPY HANDLER (Markdown-style hyperlinks) ===
 copyBtn.onclick = () => {
