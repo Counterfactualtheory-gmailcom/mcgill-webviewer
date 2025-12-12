@@ -485,6 +485,15 @@ function limitVerifiedSources() {
   }
 }
 */
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    try {
+      ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
+    } catch (e) {}
+  }
+});
+    
  </script>
 
 <!-- === COMPAiSS PREMIUM FORMATTING — CSS ONLY (SAFE FOR ALL APPS) === -->
