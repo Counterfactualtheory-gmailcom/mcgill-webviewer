@@ -365,6 +365,30 @@ if (!linkHandlerAttached) {
       }, 600);
     });
 
+// =====================================================
+// iOS WKWebView PURGE HANDLER — DAL-PARITY (DO NOT MOVE)
+// =====================================================
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+
+    // Clear output — must collapse DOM
+    const out = document.getElementById("out");
+    if (out) out.innerHTML = "";
+
+    // Remove follow-up UI
+    const followup = document.getElementById("followup-box");
+    if (followup) followup.remove();
+
+    // Remove overlay browser if present
+    const overlay = document.getElementById("sc-browser-overlay");
+    if (overlay) overlay.remove();
+
+    const frame = document.getElementById("sc-browser-frame");
+    if (frame) frame.remove();
+  }
+});
+
+    
     // ✅ Universal Copy handler
 // === UNIVERSAL COPY HANDLER (Markdown-style hyperlinks) ===
 copyBtn.onclick = () => {
