@@ -329,16 +329,6 @@ if (!linkHandlerAttached) {
   linkHandlerAttached = true;
 }
 }
-
-// === RESTORE LAST ANSWER AFTER WEBVIEW RELOAD ===
-window.addEventListener("DOMContentLoaded", () => {
-  const outEl = document.getElementById("out");
-
-  // Restore only when WebView truly reloaded
-  if (outEl && window.lastAnswerBackup && outEl.textContent.includes("Waiting for content")) {
-    outEl.innerHTML = window.lastAnswerBackup;
-  }
-});
     
     let firstMessageReceived = false;
     let readyPingerId = null;
