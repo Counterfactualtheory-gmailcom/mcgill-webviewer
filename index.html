@@ -485,14 +485,6 @@ function limitVerifiedSources() {
   }
 }
 */
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    try {
-      ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
-    } catch (e) {}
-  }
-});
     
  </script>
 
