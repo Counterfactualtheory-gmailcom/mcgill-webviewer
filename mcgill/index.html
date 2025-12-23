@@ -260,6 +260,13 @@ function isIOS() {
   return /iPad|iPhone|iPod/.test(navigator.userAgent)
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
+
+    // 📱 iOS-only: enable Copy button
+if (isIOS()) {
+  copyBtn.style.display = "block";
+} else {
+  copyBtn.style.display = "none";
+}
     
 function safeRender(md) {
   let cleaned = String(md || '');
