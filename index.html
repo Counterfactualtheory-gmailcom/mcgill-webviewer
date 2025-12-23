@@ -251,6 +251,11 @@ th, td {
       dbgEl.textContent += (dbgEl.textContent ? '\n' : '') + m;
     }
 
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+    
 function safeRender(md) {
   let cleaned = String(md || '');
 
